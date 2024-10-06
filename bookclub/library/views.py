@@ -1,9 +1,11 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 # Create your views here.
 
 def index(request):
-    return HttpResponse("Hello,world")
+    hello = "hello, world"
+    output = {"hello" : hello}
+    return render(request, "library/index.html",output)
 
 def create_book(request):
-    return render("create.html", request)
+    return HttpResponse("create book page")

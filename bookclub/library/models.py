@@ -1,13 +1,31 @@
 from django.db import models
-
+from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 class Book(models.Model):
+    class Category(models.TextChoices):
+        FICTION = "FI", _("Fiction")
+        HISTORICAL = "HI", _("Historical Fiction")
+        MYSTERY = "MY", _("Mystery & Thriller")
+        ROMANCE = "RO", _("Romance")
+        ROMANTASY = "RM", ("Romantasy")
+        FANTASY = "FA", _("Fantasy")
+        SCIENCEFIC = "SC", _("Science Fiction")
+        HORROR = "HO", _("Horror")
+        YADULTFAN = "YO", _("Young Adult Fantasy")
+        YADULTFIC = "YU", _("Young Adult Fiction")
+        DEBUT = "DE", _("Debut Novel")
+        NONFIC = "NO",_("Nonfiction")
+        MEAUTO =  "ME", _("Memoir & Autobiography")
+        HISBIO = "HB", _("History & Biography")
+        HUMOR = "HU", _("Humor")
+        ANY = "AN" , _("Any")
+
     title = models.CharField(max_length=100)
     pub_date = models.DateField()
     author = models.ManyToManyField('Author', related_name='books')
     pages = models.SmallIntegerField()
-    category = models.ManyToManyField('Category', related_name="category")
+    category = models.CharField(max_length=2, choices=Category, default=Category.ANY)
 
     def __str__(self):
         return self.title
@@ -18,23 +36,3 @@ class Author(models.Model):
 
     def __str__(self):
         return self.name
-
-class Category(models.Model):
-        CATEGORY_CHOICES = {
-        "FI": "Fiction",
-        "HI": "Historical Fiction",
-        "MY": "Mystery & Thriller",
-        "RO": "Romance",
-        "RM": "Romantasy",
-        "FA": "Fantasy",
-        "SC": "Science Fiction",
-        "HO": "Horror",
-        "YO": "Young Adult Fantasy",
-        "YU": "Young Adult Fiction",
-        "DE": "Debut Novel",
-        "NO": "Nonfiction",
-        "ME": "Memoir & Autobiography",
-        "HI": "History & Biography",
-        "HU": "Humor"    
-        }
-        name = models.CharField(max_length=2, choices=CATEGORY_CHOICES)

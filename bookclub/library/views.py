@@ -3,7 +3,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.views import generic
 from django.urls import reverse
 from .models import Book,Author
-from .forms import NameForm, ContactForm
+from .forms import NameForm, ContactForm, LoginForm
 # Create your views here.
 
 class IndexView(generic.ListView):
@@ -35,3 +35,17 @@ def create_book(request):
         form = ContactForm()
 
     return render(request, "library/create_book.html", {"form" : form})
+
+def login_view(request):
+    if request.method == "POST":
+        pass
+    else:
+        form = LoginForm()
+
+    return render(request, "library/login.html", {"form": form})
+
+def logout_view(request):
+    pass
+
+def register(request):
+    pass

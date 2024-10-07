@@ -8,4 +8,6 @@ class ContactForm(forms.Form):
     message = forms.CharField(widget=forms.Textarea)
     sender = forms.EmailField()
     cc_myself = forms.BooleanField(required=False)
-    
+
+class LoginForm(forms.Form):
+    pass

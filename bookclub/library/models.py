@@ -6,18 +6,6 @@ from django.utils.translation import gettext_lazy as _
 class User(AbstractUser):
     pass
 
-class Book(models.Model):
-
-    #bookID, title, authors, average_rating, language_code, ratings_count, text_reviews_count, publication_date, publisher
-    title = models.CharField(max_length=100)
-    description = models.CharField(max_length=10000)
-    pub_date = models.DateField()
-    author = models.ManyToManyField('Author', related_name='books')
-    pages = models.SmallIntegerField()
-
-
-    def __str__(self):
-        return self.title
 
 class Author(models.Model):
     name = models.CharField(max_length=100)
@@ -43,3 +31,21 @@ class Publisher(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+class Book(models.Model):
+
+    #bookID, title, authors, average_rating, language_code, ratings_count, text_reviews_count, publication_date, publisher
+    title = models.CharField(max_length=100)
+    description = models.CharField(max_length=10000,blank=True)
+    pub_date = models.DateField(null=True, blank=True)
+    author = models.ManyToManyField('Author', related_name='books')
+    pages = models.SmallIntegerField(blank=True, null=True)
+    series = models.ForeignKey(Series,blank=True,null=True, on_delete=models.CASCADE)
+    series_num = models.SmallIntegerField(blank=True, null=True)
+    genres = models.ManyToManyField(Genres, blank=True, null=True)
+    publisher = models.ForeignKey(Publisher, blank=True, null=True, on_delete=models.CASCADE)
+    cover = models.URLField(blank=True)
+
+    def __str__(self):
+        return self.title

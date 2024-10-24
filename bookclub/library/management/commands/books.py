@@ -1,6 +1,7 @@
-from django.core.management.base import BaseCommand, CommandError
 import csv
-from library.models import Genres, Author, Series, Publisher
+from datetime import datetime
+from django.core.management.base import BaseCommand, CommandError
+from library.models import Genres, Author, Series, Publisher, Book
 
 class Command(BaseCommand):
     help = """
@@ -161,79 +162,119 @@ class Command(BaseCommand):
             for publisher in publishers:
                 p = Publisher.objects.create(name=publisher)
 
+        elif func == "books":
+            # entry = Book.objects.all()
+
+            # if entry:
+            #     raise CommandError("Books already exist")
+            # else:
+            #     self.stdout.write(self.style.SUCCESS("Book table is empty"))
+
+            
+            with open(self.csv_path, mode="r") as file:
+                csv_reader = csv.DictReader(file)
+
+                for row in csv_reader:
+                    series_num = None
+                    series_name = None
+                    date = row["publishDate"]
+                    try:
+                        d = datetime.strptime(date, "%m/%d/%y").date()
+                    except ValueError:
+                        d = None
+                    desc = row["description"]
+                    cover = row["coverImg"]
+                    try:
+                        pages = int(row["pages"])
+                    except ValueError:
+                        pages = None
+                    genre = row["genres"]
+                    author = row["author"]
+                    series = row["series"]
+                    title = row["title"]
+                    publisher = row["publisher"]
+
+                    # publisher
+                    p = Publisher.objects.get(name = publisher)
+                    # series
+                    if series:
+                        series_index = series.find("#")
+                        if series_index == -1:
+                            series_name = series.strip()
+                        else:
+                            series_name = series[:series_index].strip()
+                            try:
+                                series_num = int(series[series_index+1:series_index+2].strip())
+                            except ValueError:
+                                series_num = None
+                        s = Series.objects.get(name = series_name)
+                    
+                    bk = Book(
+                        title = title, 
+                        pages = pages,
+                        cover = cover,
+                        pub_date = d,
+                        description = desc,
+                        series_num = series_num,
+                        series = s
+                    )
+                    bk.save()
+                    # genres
+                    try:
+                        genre = genre.strip("[]")
+                        if genre:
+                            genres = genre.split(",")
+                            if len(genres) > 1:
+                                for x in genres:
+                                    g = Genres.objects.get(name = x.strip(" '"))
+                                    bk.genres.add(g)
+                            else:
+                                g = Genres.objects.get(name = genre.strip(" '"))
+                                bk.genres.add(g)
+                    except:
+                        print("error",genre)    
+                        # authors
+                    try:
+                        if author:
+                            authors = author.split(",")
+                            if len(authors) > 1:
+                                for x in authors:
+                                    index = x.find("(")
+                                    if index != -1:
+                                        x = x[:index].strip()
+                                        a = Author.objects.get(name = x)
+                                        bk.author.add(a)
+                                    else:
+                                        x = x.strip()
+                                        if x.find(")") == -1:
+                                            a = Author.objects.get(name = x)
+                                            bk.author.add(a)
+                            else:
+                                index = author.find("(")
+                                if index != -1:
+                                    author = author[:index].strip()
+                                    a  = Author.objects.get(name = author)
+                                    bk.author.add(a)
+                                else:
+                                    a = Author.objects.get( name = author.strip())
+                                    bk.author.add(a)
+                    except:
+                        print(author)
+
         else:
             raise CommandError("Wrong input")
 
-# def finding_authors():
-#     with open('goodreads_data.csv', mode = 'r') as file:
-#         csv_reader = csv.DictReader(file)
-#         author_set = set()
-#         for row in csv_reader:
-#             author_set.add(row["Author"].strip())
-        
-#         return author_set
-
-
-# def max_desc():
-#     with open('books_modified.csv', mode = 'r') as file:
-#         csv_reader = csv.DictReader(file)
-#         max_len = 10000
-#         for row in csv_reader:
-#             current_len = len(row["description"])
-#             if current_len > max_len:
-#                 print(row["title"])
-
-#         # max_len = 8947
-
-
-        # genres = finding_genres()
-        # for genre in genres:
-        #     Genres.objects.create(
-        #         name = genre
-        #     )
-
-    # genre_set = finding_genres()
-    # genre_list = list(genre_set)
-    # genre_list.sort()
-    # genre_len = [len(item) for item in genre_list]
-    # genre_len.sort()
-    # print(genre_len)
-    # print(len(genre_list))
-    # author_set = finding_authors()
-    # authors_list = list(author_set)
-    # authors_list.sort()
-    # print(authors_list)
-
-    # with open('books_modified.csv', mode = 'r') as file:
-    #     csv_reader = csv.DictReader(file)
-    #     genres_set = set()
-    #     for row in csv_reader:
-    #         row = row["genres"].strip("[]")
-    #         multiple_genres = row.split(",")
-    #         if len(multiple_genres) != 1:
-    #             for genre in multiple_genres:
-    #                 genres_set.add(genre.strip(" '"))
-    #         else:
-    #             genres_set.add(row.strip(" '"))
-
-    # genres_list = list(genres_set)
-    # genres_list.sort()
-    # print(genres_list[1:-1])
-    # print("len", len(genres_list[1:-1]))
-
-    # with open('books.csv', mode = 'r') as file:
-    #     csv_reader = csv.DictReader(file)
-    #     authors_set = set()
-    #     for row in csv_reader:
-    #         row = row["author"].split(",")
-    #         if len(row) > 1:
-    #             for author in row:
-    #                 authors_set.add(author.strip())
-    #         else:
-    #             row[0].strip()
-
-    # authors_list = list(authors_set)
-    # authors_list.sort()
-    # print(len(authors_list))
-
-    # max_desc()
+# Rick Riordan (Goodreads Author), TK (Illustrator)
+# Ai Mi, Anna Holmwood (Translator), 艾米
+# Alistair MacLeod, پ, پژمان طهرانیان (Translator)
+# M, Takami Nieda (Translator)
+# Valentine, (Goodreads Author)
+# Wataru Watari, 渡航, Ponkan⑧ (Illustrator), ぽんかん⑧ (イラスト)
+# Alves/Mengistu, U
+# error 'Manga', 'Shonen', 'Fantasy', 'Comics Manga', 'Comics', 'Graphic Novels', 'Action', 'Fiction', 'Young Adult', '漫画'
+# Tan Jiu, 坛九
+# Jan Edwards (Goodreads Author) (editor), Jenny Barber (editor), Anne Nicholls (contributor), Ian Whates (contributor), James Brogden (Goodreads Author) (contributor), Joyce Chng, (contributor), Zen Cho (Goodreads Author) (contributor), Adrian Tchaikovsky (Goodreads Author) (Contributor), more…
+# Eiji Mikage, 御影 瑛路, 鉄雄 (イラスト)
+# Eiji Mikage, 御影 瑛路, 鉄雄 (イラスト)
+# Eiji Mikage, 御影 瑛路, 鉄雄 (イラスト)
+# Eiji Mikage, 御影 瑛路, 鉄雄 (イラスト)

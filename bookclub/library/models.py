@@ -21,7 +21,6 @@ class Genres(models.Model):
 
 class Series(models.Model):
     name = models.CharField(max_length=100)
-    number = models.SmallIntegerField()
 
     def __str__(self):
         return self.name
@@ -34,18 +33,18 @@ class Publisher(models.Model):
     
 
 class Book(models.Model):
-
-    #bookID, title, authors, average_rating, language_code, ratings_count, text_reviews_count, publication_date, publisher
     title = models.CharField(max_length=100)
     description = models.CharField(max_length=10000,blank=True)
     pub_date = models.DateField(null=True, blank=True)
-    author = models.ManyToManyField('Author', related_name='books')
+    author = models.ForeignKey(Author, related_name='books', on_delete=models.CASCADE)
     pages = models.SmallIntegerField(blank=True, null=True)
-    series = models.ForeignKey(Series,blank=True,null=True, on_delete=models.CASCADE)
+    series = models.ForeignKey(Series,blank=True,null=True, on_delete=models.CASCADE, related_name='books')
     series_num = models.SmallIntegerField(blank=True, null=True)
-    genres = models.ManyToManyField(Genres, blank=True, null=True)
-    publisher = models.ForeignKey(Publisher, blank=True, null=True, on_delete=models.CASCADE)
-    cover = models.URLField(blank=True)
+    genres = models.ManyToManyField(Genres, blank=True, null=True, related_name='books')
+    publisher = models.ForeignKey(Publisher, blank=True, null=True, on_delete=models.CASCADE, related_name='books')
+    cover = models.URLField(blank=True, null=True)
+    num_ratings = models.SmallIntegerField(default=0, blank=True)
+    rating = models.DecimalField(default=0, max_digits=2, decimal_places=1)
 
     def __str__(self):
         return self.title

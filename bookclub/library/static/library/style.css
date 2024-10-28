@@ -1,4 +1,6 @@
 
 body {
-    color: green;
+    color: red;
+    min-height: 120vh;
 }
+

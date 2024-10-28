@@ -6,25 +6,10 @@ from django.views import generic
 from django.urls import reverse
 from .models import Book, Author, User
 from .forms import NameForm, ContactForm, LoginForm
-# Create your views here.
-
-class IndexView(generic.ListView):
-    template_name = "library/index.html"
-    context_object_name = "latest_books_added"
-
-    def get_queryset(self):
-        """Return last added 5 books """
-        return Book.objects.all()[:5]
-
-class DetailView(generic.DetailView):
-    model = Book
-    template_name = "library/book.html"
-
 
 def index(request):
     hello = "hello, world"
-    books = Book.objects.all()
-    output = {"hello" : hello, "books":books}
+    output = {"hello" : hello}
     return render(request, "library/index.html",output)
 
 def create_book(request):

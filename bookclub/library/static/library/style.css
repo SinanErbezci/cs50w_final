@@ -1,6 +1,25 @@
 
 body {
-    color: red;
     min-height: 120vh;
 }
 
+.brand-img {
+    margin: 0;
+    padding: 0;
+    display: block;
+    height: auto;
+    width: 4rem;
+}
+
+.search-btn {
+    border: thin solid black;
+}
+
+.search-btn:hover {
+    background-color: hsl(0, 2%, 82%);
+}
+
+.dropdown-menu {
+    border-right: none;
+    border-left: none;
+}

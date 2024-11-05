@@ -5,12 +5,11 @@
 {% endblock %}
 
 {% block body %}
-    {{hello}}
-    <p>selam</p>
-    <h3>Books</h3>
-    {% for book in latest_books_added %}
+        <!-- {{hello}} -->
+    <p>{{ user.username }}</p>
+    <!-- {% for book in latest_books_added %}
     <p>{{book.title}}</p>
     <p>{{forloop.counter}}</p>
-    {% endfor %}
+    {% endfor %} -->
 
 {% endblock %}

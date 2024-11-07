@@ -8,15 +8,20 @@
 :root {
     --FONT: "Libre Baskerville", serif;
     --FS: clamp(1rem, 2.2vh , 1.5rem);
+
     --BGCOLOR1: #F5EFDC;
     --FONTCOLOR: #333;
 
     --bs-font-sans-serif: "Libre Baskerville", serif;
+    --bs-body-bg:#F5EFDC;
     --bs-body-color: #333;
-    --bs-body-bg: #F5EFDC;
     --BORDERCOLOR1: #5D3A1A;
 
 }
+
+/* img {
+    display: block;
+} */
 
 html {
     scroll-behavior: smooth;
@@ -26,6 +31,7 @@ body {
     min-height: 120vh;
     color: var(--FONTCOLOR);
     border-color: var(--BORDERCOLOR1);
+    background-color: #F5EFDC;
 }
 
 .brand-img {
@@ -75,6 +81,7 @@ nav {
 
 .pattern {
     height: 80px;
+    width: 100%;
     background-image: url("./images/patterns2.png");
     background-repeat: repeat;
 }
@@ -92,13 +99,17 @@ nav {
 }
 
 .hero {
+    /* position: relative; */
+    /* min-height: calc(100vh - 97px); */
     display: flex;
     flex-direction: column;
+    padding: 0;
+    margin: 0;
 }
 
-.img-flui {
-    display: block;
-    max-width: 160px;
+
+.cozy-img {
+    max-width: 100%;
     height: auto;
 }
 
@@ -164,3 +175,14 @@ nav {
         }
 
 }
+
+/* 
+Deep Walnut Brown: #5D3A1A
+
+Creamy Off-White: #F5F5DC
+
+Forest Green: #228B22
+
+Rich Burgundy: #800020
+
+Soft Gold: #D4AF37 */

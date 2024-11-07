@@ -2,3 +2,6 @@ books_database/
 books_modified.csv
 db.sqlite3
 books_1.Best_Books_Ever.csv
+bookclub/library/static/library/package-lock.json
+bookclub/library/static/library/package.json
+bookclub/library/static/library/node_modules

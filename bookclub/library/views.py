@@ -49,7 +49,7 @@ def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
 
-def register(request):
+def signup(request):
     if request.method == "POST":
         username = request.POST["username"]
         email = request.POST["email"]

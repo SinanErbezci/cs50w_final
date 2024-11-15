@@ -2,10 +2,11 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.db import IntegrityError
 from django.contrib.auth import authenticate,login, logout
+from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.views import generic
 from django.urls import reverse
 from .models import Book, Author, User
-from .forms import NameForm, ContactForm, LoginForm
+from .forms import NameForm, ContactForm, LoginForm, CreateUserFrom
 
 def index(request):
     hello = "hello, world"
@@ -27,22 +28,25 @@ def create_book(request):
 # User views
 def login_view(request):
     if request.method == "POST":
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password"]
+            
+            user = authenticate(request, username=username, password=password)
 
-        # Attempt to sign user in
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-
-        # Check if authentication successful
-        if user is not None:
-            login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            if user is not None:
+                login(request, user)
+                print("a")
+                return HttpResponseRedirect(reverse("index"))
+            else:
+                return render(request, "library/login.html")
+        
         else:
-            return render(request, "library/login.html", {
-                "message": "Invalid username and/or password."
-            })
+            return render(request, "library/login.html", {"form": form})
     else:
-        return render(request, "library/login.html")
+        form = LoginForm()
+        return render(request, "library/login.html", {"form": form})
 
 
 def logout_view(request):
@@ -73,4 +77,5 @@ def signup(request):
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
-        return render(request, "library/register.html")
+        form = CreateUserFrom()
+        return render(request, "library/signup.html", {"form": form})

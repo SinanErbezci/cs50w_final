@@ -1,0 +1,19 @@
+{% extends "library/layout.html" %}
+
+{% block body %}
+
+    <h2>Login</h2>
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'signup' %}" method="post">
+        {% csrf_token %}
+        {{form}}
+        <input class="btn btn-primary" type="submit" value="Sign Up">
+    </form>
+    
+    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+
+{% endblock %}

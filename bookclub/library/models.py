@@ -4,8 +4,19 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 class User(AbstractUser):
-    pass
+    MALE = "M"
+    FEMALE = "F"
+    OTHER = "O"
 
+    GENDER_CHOICES = {
+        MALE : "Male",
+        FEMALE : "Female",
+        OTHER : "Other"
+    }
+
+    birth_date = models.DateField(null=True, blank=True, default=None)
+    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, null=True, blank=True, default=None)
+    
 
 class Author(models.Model):
     name = models.CharField(max_length=100)

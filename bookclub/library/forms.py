@@ -11,12 +11,8 @@ class ContactForm(forms.Form):
     sender = forms.EmailField()
     cc_myself = forms.BooleanField(required=False)
 
-class LoginForm(AuthenticationForm):
-    template_name = "library/form_snippet.html"
-    pass
-
 class CreateUserFrom(UserCreationForm):
-    template_name = "form_snippet.html"
+    template_name = "library/form_snippet.html"
     class Meta:
         model = User
         fields = ("username", "password1", "password2", "gender","email")

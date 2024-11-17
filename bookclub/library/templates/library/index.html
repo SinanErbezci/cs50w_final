@@ -1,9 +1,7 @@
 {% extends "library/layout.html" %}
 {% load static %}
 
-{% block title %}
-<title>Homepage</title>
-{% endblock %}
+{% block title %}Homepage{% endblock %}
 
 {% block body %}
 <section class="hero">
@@ -26,7 +24,7 @@
         <div class="row my-4">
             <div class="col text-center">
                 <a href="{% url 'signup' %}"><button type="button" class="btn btn-primary btn-lg mx-4 px-5 shadow">Sign Up</button></a>
-                <a href="{% url 'login' %}"><button type="button" class="btn btn-primary btn-lg mx-4 px-5 shadow">Log In</button></a>
+                <a href="{% url 'login' %}"><button type="button" class="btn btn-primary btn-lg mx-4 px-5 shadow">Login</button></a>
             </div>
         </div>
     </div>

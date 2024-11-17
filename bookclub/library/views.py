@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404,redirect
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.db import IntegrityError
 from django.contrib.auth import authenticate,login, logout
@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.views import generic
 from django.urls import reverse
 from .models import Book, Author, User
-from .forms import NameForm, ContactForm, LoginForm, CreateUserFrom
+from .forms import NameForm, ContactForm, CreateUserFrom
 
 def index(request):
     hello = "hello, world"
@@ -28,25 +28,25 @@ def create_book(request):
 # User views
 def login_view(request):
     if request.method == "POST":
-        form = LoginForm(request.POST)
+        form = AuthenticationForm(data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data["username"]
-            password = form.cleaned_data["password"]
+            login(request, form.get_user())
+            return redirect("index")
+            # username = form.cleaned_data["username"]
+            # password = form.cleaned_data["password"]
             
-            user = authenticate(request, username=username, password=password)
+            # user = authenticate(request, username=username, password=password)   
 
-            if user is not None:
-                login(request, user)
-                print("a")
-                return HttpResponseRedirect(reverse("index"))
-            else:
-                return render(request, "library/login.html")
-        
-        else:
-            return render(request, "library/login.html", {"form": form})
+            # if user is not None:
+            #     login(request, user)
+            #     print("a")
+            #     return redirect("index")
+            # else:
+            #     print("b")
     else:
-        form = LoginForm()
-        return render(request, "library/login.html", {"form": form})
+        form = AuthenticationForm()
+
+    return render(request, "library/login.html", {"form": form})
 
 
 def logout_view(request):
@@ -55,27 +55,17 @@ def logout_view(request):
 
 def signup(request):
     if request.method == "POST":
-        username = request.POST["username"]
-        email = request.POST["email"]
-
-        # Ensure password matches confirmation
-        password = request.POST["password"]
-        confirmation = request.POST["confirmation"]
-        if password != confirmation:
-            return render(request, "library/register.html", {
-                "message": "Passwords must match."
-            })
-
-        # Attempt to create new user
-        try:
-            user = User.objects.create_user(username, email, password)
-            user.save()
-        except IntegrityError:
-            return render(request, "library/register.html", {
-                "message": "Username already taken."
-            })
-        login(request, user)
-        return HttpResponseRedirect(reverse("index"))
-    else:
+        form = CreateUserFrom(request.POST)
+        if form.is_valid():
+            print("valid")
+            username = form.cleaned_data["username"]
+            password = form.cleaned_data["password1"]
+            form.save()
+            new_user = authenticate(username=username, password=password)
+            if new_user is not None:
+                login(request,new_user)
+                return redirect("index")
+    else:  
         form = CreateUserFrom()
-        return render(request, "library/signup.html", {"form": form})
+
+    return render(request, "library/signup.html", {"form": form})

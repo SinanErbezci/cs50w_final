@@ -15,4 +15,4 @@ class CreateUserFrom(UserCreationForm):
     template_name = "library/form_snippet.html"
     class Meta:
         model = User
-        fields = ("username", "password1", "password2", "gender","email")
+        fields = ("username", "password1", "password2", "email")

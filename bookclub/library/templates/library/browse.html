@@ -1,0 +1,19 @@
+{% extends "library/layout.html" %}
+
+{% block body %}
+    <h1 class="form-title mt-5 mb-3"> Recently Added Books</h1>
+    <div class="row">
+    {% for book in recently %}
+    <div class="col-3 text-center">
+        <div class="card">
+        <img class="card-img-top" src="{{book.cover}}" alt="" >
+        <div class="card-body">
+        <h4 class="card-title">{{book.title}}</h4>
+        <p class="card-text">{{book.author}}</p>    
+        </div>
+        </div>
+    </div>
+    {% endfor %}
+    </div>
+    <div class="pattern"></div>
+{% endblock %}

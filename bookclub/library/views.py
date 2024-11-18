@@ -69,3 +69,36 @@ def signup(request):
         form = CreateUserFrom()
 
     return render(request, "library/signup.html", {"form": form})
+
+def browse(request):
+    content = {}
+    content["recently"] = Book.objects.all().order_by("-pk")[:4]
+    
+    return render(request, "library/browse.html", content)
+
+def browse_book(request, book_name=""):
+    content = {}
+    if book_name:
+        content["name"] = book_name
+    else:
+        content["name"] = "home of books"
+    
+    return render(request, "library/browse.html", content)
+    
+def browse_author(request, author_name=""):
+    content = {}
+    if author_name:
+        content["name"] = author_name
+    else:
+        content["name"] = "home of authors"
+    
+    return render(request, "library/browse.html", content)
+
+def browse_genre(request, genre_name=""):
+    content = {}
+    if genre_name:
+        content["name"] = genre_name
+    else:
+        content["name"] = "home of genres"
+    
+    return render(request, "library/browse.html", content)

@@ -79,11 +79,13 @@ def browse(request):
 def browse_book(request, book_name=""):
     content = {}
     if book_name:
-        content["name"] = book_name
+        book = Book.objects.get(title=book_name)
+        content["book"] = book
+
     else:
         content["name"] = "home of books"
     
-    return render(request, "library/browse.html", content)
+    return render(request, "library/book.html", content)
     
 def browse_author(request, author_name=""):
     content = {}

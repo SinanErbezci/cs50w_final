@@ -155,6 +155,21 @@ width: 100%;
     color:red;
 }
 
+.card-link {
+    text-decoration: none;
+    color: var(--FONTCOLOR);
+}
+.card-link:hover {
+    text-decoration: underline;
+}
+
+.book-link {
+    text-decoration: none;
+    color: var(--FONTCOLOR);
+}
+.book-link:hover {
+    text-decoration: underline;
+}
 /* #id_username{
 margin-bottom: 20px;
 } */

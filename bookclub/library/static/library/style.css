@@ -163,12 +163,66 @@ width: 100%;
     text-decoration: underline;
 }
 
+.book-cover {
+    width: 200px;
+    height: 300px;
+}
+
 .book-link {
     text-decoration: none;
     color: var(--FONTCOLOR);
 }
 .book-link:hover {
     text-decoration: underline;
+}
+
+.twoliner {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+            line-clamp: 2; 
+    -webkit-box-orient: vertical;
+}
+
+.star-outer {
+    position: relative;
+    display: inline-block;
+}
+
+.star-inner {
+    position: absolute;
+    left: 0;
+    top: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+}
+
+.star-outer::before {
+    content: url(./images/star_icon_fill.svg) url(./images/star_icon.svg) url(./images/star_icon.svg) url(./images/star_icon.svg) url(./images/star_icon.svg);
+    
+}
+
+.book-title {
+    font-weight: 800;
+}
+
+.book-desc .collapsing {
+    height: 10.5rem;
+}
+.book-desc .collapse {
+    height: 10.5rem;
+    position: relative;
+    display: block;
+    overflow: hidden;
+}
+
+.book-desc .collapse.show {
+    height: auto;
+}
+
+.show-more {
+    display: none;
 }
 /* #id_username{
 margin-bottom: 20px;

@@ -12,9 +12,10 @@ urlpatterns = [
 
     # Browse Section
     path("browse/", views.browse, name="browse"),
-    path("browse/books/<str:book_name>", views.browse_book, name="book"),
-    path("browse/authors/<str:author_name>", views.browse_author),
+    path("browse/books/<int:book_id>", views.browse_book, name="book"),
     path("browse/genres/<str:genre_name>", views.browse_genre),
+    path("browse/authors/", views.browse_author, name="authors"),
+    path("browse/authors/<str:author_name>", views.browse_author),
     path("browse/genres/", views.browse_genre, name="genres"),
 
 ]

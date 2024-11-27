@@ -1,15 +1,18 @@
 {% extends "library/layout.html" %}
 
 {% block body %}
+<section class="recently-added">
     <h1 class="form-title mt-5 mb-3"> Recently Added Books</h1>
-    <div class="container mb-4">
-        <div class="row gx-2 gy-2 row-cols-1 row-cols-sm-2 row-cols-lg-4 justify-content-center">
+    <div class="container mb-4 overflow-auto">
+        <div class="row gx-2 gy-2 row-cols-1 row-cols-sm-2 row-cols-lg-4 flex-nowrap">
     {% for book in recently %}
         <div class="col d-flex align-items-strecth justify-content-center">
         <div class="card text-center mx-2 bg-primary shadow">
-        <img class="card-img-top mx-auto" src="{{book.cover}}" alt="" style="width: 200px;height: 300px;">
+        <img class="card-img-top book-cover mx-auto" src="{{book.cover}}" alt="book cover">
             <div class="d-flex card-body flex-column justify-content-end " style="max-width:200px;">
-                <a class="book-link fw-bolder fs-5 text-center" href="{% url 'book' book.title %}">{{book.title}}</a>
+                <div class="twoliner">
+                    <a class="book-link fw-bolder fs-5 text-center" href="{% url 'book' book.id %}">{{book.title}}</a>
+                </div>
                 <a href="" class="book-link text-center">{{book.author}}</a>
             </div>
         </div>
@@ -17,5 +20,53 @@
         {% endfor %}
         </div>
     </div>
-    <div class="pattern"></div>
+</section>
+<div class="pattern"></div>
+<section class="author">
+    <h1 class="mt-4 text-center">Check out books from <span class="text-decoration-underline">{{author_name}}</span></h1>
+    <div class="container mb-4 overflow-auto">
+        {% if author_over %}
+            <div class="row gx-2 gy-2 row-cols-1 row-cols-sm-2 row-cols-lg-4 flex-nowrap">
+        {% else %}
+            <div class="row gx-2 gy-2 row-cols-1 row-cols-sm-2 row-cols-lg-4 flex-nowrap justify-content-center">
+        {% endif %}
+    {% for book in author_books %}
+        <div class="col d-flex align-items-strecth justify-content-center">
+        <div class="card text-center mx-2 bg-primary shadow">
+        <img class="card-img-top mx-auto" src="{{book.cover}}" alt="" style="width: 200px;height: 300px;">
+            <div class="d-flex card-body flex-column justify-content-end " style="max-width:200px;">
+                <div class="twoliner">
+                <a class="book-link fw-bolder fs-5 text-center" href="{% url 'book' book.id %}">{{book.title}}</a>
+                </div>
+            </div>
+        </div>
+        </div>
+    {% endfor %}
+        </div>
+    </div>
+</section>
+<div class="pattern"></div>
+<section class="genre">
+    <h1 class="mt-4 text-center">Check out genre of <span class="text-decoration-underline">{{genre_name}}</span></h1>
+    <div class="container mb-4 overflow-auto">
+        {% if genre_over %}
+            <div class="row gx-2 gy-2 row-cols-1 row-cols-sm-2 row-cols-lg-4 flex-nowrap">
+        {% else %}
+            <div class="row gx-2 gy-2 row-cols-1 row-cols-sm-2 row-cols-lg-4 flex-nowrap justify-content-center">
+        {% endif %}
+    {% for book in genre_books %}
+        <div class="col d-flex align-items-strecth justify-content-center">
+        <div class="card text-center mx-2 bg-primary shadow">
+        <img class="card-img-top mx-auto" src="{{book.cover}}" alt="" style="width: 200px;height: 300px;">
+            <div class="d-flex card-body flex-column justify-content-end " style="max-width:200px;">
+                <div class="twoliner">
+                <a class="book-link fw-bolder fs-5 text-center" href="{% url 'book' book.id %}">{{book.title}}</a>
+                </div>
+            </div>
+        </div>
+        </div>
+    {% endfor %}
+        </div>
+    </div>
+</section>
 {% endblock %}

@@ -1,6 +1,39 @@
 {% extends "library/layout.html" %}
 
 {% block body %}
-<p>{{book.title}}</p>
-<p>{{book.author}}</p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <img class="card-img-top book-cover mx-auto" src="{{book.cover}}" alt="book cover">
+            <div class="d-flex flex-column justify-content-center align-items-center">
+            <div class="star-outer mt-2">
+                <div class="star-inner"></div>
+            </div>
+            <p>4.2 (21 Reviews) </p>
+        </div>
+        </div>
+        <div class="col-8 border-start border-2">
+            <div class="px-3">
+                <h2 class="book-title">{{book.title}}</h2>
+                <h5>by {{book.author}}</h5>
+                <div class="book-desc">
+                    <p class="mb-0 collapse" id="collapse-desc">{{book.description}}</p>
+                </div>
+                <button class="show-more btn btn-primary" data-bs-toggle="collapse" href="#collapse-desc" 
+                aria-expanded="false" aria-controls="collapse-desc"></button>
+                <p><span class="text-decoration-underline">Publisher:</span> {{book.publisher}} | <span class="text-decoration-underline">Publish Date:</span> {{book.pub_date}}</p>
+                <div class="mb-2 overflow-auto">
+                <p class="text-nowrap"><span class="text-decoration-underline">Genres:</span>
+                {% for genre in book.genres.all %}
+                <span class="mx-2 fw-bolder">{{genre.name}}</span>
+                {% empty %}
+                    <span>no genre</span>
+                {% endfor %}
+                </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 {% endblock %}

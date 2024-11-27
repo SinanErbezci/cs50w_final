@@ -5,9 +5,9 @@ from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.views import generic
 from django.urls import reverse
-from .models import Book, Author, User
+from .models import Book, Author, User, Genres
 from .forms import NameForm, ContactForm, CreateUserFrom
-
+from random import choice
 def index(request):
     hello = "hello, world"
     output = {"hello" : hello}
@@ -72,15 +72,42 @@ def signup(request):
 
 def browse(request):
     content = {}
+    # Last added books
     content["recently"] = Book.objects.all().order_by("-pk")[:4]
+
+    # Randomly select author
+    pks = Author.objects.values_list('pk', flat=True)
+    random_pk = choice(pks)
+    random_obj = Author.objects.get(pk=random_pk)
+    content["author_name"] = random_obj
+    content["author_books"] = random_obj.books.all()
+    if random_obj.books.count() > 4:
+        content["author_over"] = True
+    else:
+        content["author_over"] = False
+
+    # Randomly select genre
+    pks = Genres.objects.values_list('pk', flat=True)
+    random_pk = choice(pks)
+    random_obj = Genres.objects.get(pk=random_pk)
+    content["genre_name"] = random_obj
+    content["genre_books"] = random_obj.books.all()[:10]
+    if random_obj.books.count() > 4:
+        content["genre_over"] = True
+    else:
+        content["genre_over"] = False
+    
     
     return render(request, "library/browse.html", content)
 
-def browse_book(request, book_name=""):
+def browse_book(request, book_id):
     content = {}
-    if book_name:
-        book = Book.objects.get(title=book_name)
+    if book_id:
+        book = Book.objects.get(pk=book_id)
+        print(book.genres.all())
+        print(book.pub_date)
         content["book"] = book
+
 
     else:
         content["name"] = "home of books"

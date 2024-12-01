@@ -176,6 +176,15 @@ width: 100%;
     text-decoration: underline;
 }
 
+
+.oneliner {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* number of lines to show */
+            line-clamp: 1; 
+    -webkit-box-orient: vertical;
+}
+
 .twoliner {
     overflow: hidden;
     display: -webkit-box;
@@ -223,6 +232,10 @@ width: 100%;
 
 .show-more {
     display: none;
+}
+
+.clickme:hover {
+    box-shadow: 5px 5px #5D3A1A;
 }
 /* #id_username{
 margin-bottom: 20px;

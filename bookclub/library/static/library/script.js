@@ -5,19 +5,29 @@ document.addEventListener('DOMContentLoaded', () => {
     
     checkButton();
     
-    // window.addEventListener('resize', () => {
-        
-    //     let heightDesc = parseInt(computedDesc.getPropertyValue('height')) / parseInt(computedDesc.getPropertyValue('line-height'));
-    //     console.log(heightDesc);
-    // })
+    window.addEventListener('resize', () => {
+         checkButton();
+    });
+
+    showButton.addEventListener('click', readMoreLess);
 });
 
 function checkButton() {
-    let computedDesc = window.getComputedStyle(descP);
-    let heightDesc = parseInt(computedDesc.getPropertyValue('height')) / parseInt(computedDesc.getPropertyValue('line-height'));
-    console.log(heightDesc);
-    if (heightDesc >= 7) {
-        console.log("yes");
-        showButton.innerHTML = '<i class="bi bi-caret-down-fill"></i> Read more  <i class="bi bi-caret-down-fill"></i>'
+    if (descP.scrollHeight > descP.clientHeight) {
         showButton.style.display = "block";}
+    else {
+        showButton.style.display = "none";
+        descP.className = "mb-0 collapse";
+        showButton.setAttribute('aria-expanded', "false");
+        showButton.innerHTML = '<i class="bi bi-caret-down-fill"></i> Read more  <i class="bi bi-caret-down-fill">'   
+    }
+}
+
+function readMoreLess() {
+    if (showButton.getAttribute('aria-expanded') == "true") {
+        showButton.innerHTML = '<i class="bi bi-caret-up-fill"></i> Read less  <i class="bi bi-caret-up-fill">'
+    }
+    else {
+        showButton.innerHTML = '<i class="bi bi-caret-down-fill"></i> Read more  <i class="bi bi-caret-down-fill">'
+    }
 }

@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
@@ -59,3 +60,12 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
+    
+class Review(models.Model):
+    book_id = models.ForeignKey(Book, on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.SmallIntegerField(validators=[
+        MaxValueValidator(5), MinValueValidator(1)
+    ])
+    text = models.TextField(max_length=500)
+    date = models.DateField(auto_now_add=True)

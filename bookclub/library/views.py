@@ -5,7 +5,7 @@ from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.views import generic
 from django.urls import reverse
-from .models import Book, Author, User, Genres
+from .models import Book, Author, User, Genres, Review
 from .forms import NameForm, ContactForm, CreateUserFrom
 from random import choice
 def index(request):
@@ -104,10 +104,9 @@ def browse_book(request, book_id):
     content = {}
     if book_id:
         book = Book.objects.get(pk=book_id)
-        print(book.genres.all())
-        print(book.pub_date)
         content["book"] = book
-
+        reviews = Review.objects.filter(book_id = book)
+        content["reviews"] = reviews
 
     else:
         content["name"] = "home of books"

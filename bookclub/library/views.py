@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404,redirect
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.db import IntegrityError
+from django.contrib import messages
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.views import generic
@@ -8,6 +9,7 @@ from django.urls import reverse
 from .models import Book, Author, User, Genres, Review
 from .forms import NameForm, ContactForm, CreateUserFrom
 from random import choice
+
 def index(request):
     hello = "hello, world"
     output = {"hello" : hello}
@@ -101,6 +103,19 @@ def browse(request):
     return render(request, "library/browse.html", content)
 
 def browse_book(request, book_id):
+
+    if request.method == "POST":
+        text = request.POST["text"]
+        rating = request.POST["rating"]
+        rating = int(rating)
+
+        review = Review(book_id_id=book_id, user_id_id=request.user.id, rating=rating, text=text)
+        review.save()
+        messages.success(request, "You've succesfully submitted your review.")
+        
+        print("text ->", text)
+        print("rating ->", rating)
+    
     content = {}
     if book_id:
         book = Book.objects.get(pk=book_id)
@@ -130,3 +145,4 @@ def browse_genre(request, genre_name=""):
         content["name"] = "home of genres"
     
     return render(request, "library/browse.html", content)
+

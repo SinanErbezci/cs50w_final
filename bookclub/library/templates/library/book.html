@@ -7,7 +7,7 @@
             <img class="card-img-top book-cover mx-auto" src="{{book.cover}}" alt="book cover">
             <div class="d-flex flex-column justify-content-center align-items-center">
             <div class="star-outer mt-2">
-                <div class="star-inner"></div>
+                <div class="star-inner" data-rating="2.3"></div>
             </div>
             <p>4.2 (21 Reviews) </p>
         </div>
@@ -39,6 +39,11 @@
 <div class="container mt-4" style="max-width: 1000px;">
     <div class="row ms-5">
     <h2 class="ms">Reviews</h2>
+    {% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
     </div>
     {% if reviews %}
         {% for review in reviews %}
@@ -53,10 +58,10 @@
                     <div class="card-body">
                     <h5 class="card-title">
                         <div class="star-outer">
-                        <div class="star-inner"></div>
+                        <div class="star-inner" data-rating="{{review.rating}}"></div>
                     </div></h5>
-                    <p class="card-text">{{review.text}}</p>
-                    <p class="card-text"><small class="text-muted">Review on {{review.date}}</small><button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">Read Review</button></p>
+                    <p class="card-text twoliner">{{review.text}}</p>
+                    <p class="card-text"><small class="text-muted">Review on {{review.date}}</small><button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal" id="read-review">Read Review</button></p>
                     </div>
                 </div>
                 </div>
@@ -67,24 +72,58 @@
     <h3 class="text-center mt-3">No reviews yet.</h3>
     {% endif %}
 </div>
+{% if user.is_authenticated %}
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formModal">Write a Review</button>
+<div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg model-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title" id="formModalLabel">Write a Review</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <p class="form-feedback text-center"></p>
+            <form method="post" id="review-form">
+                {% csrf_token %}
+            <div class="rating-star mb-3">
+                <input type="number" name="rating" hidden>
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+                <i class="bi bi-star"></i>
+            </div> 
+                <div class="mb-3">
+                    <label for="reviewform-text" class="form-label">Write your review here:</label>
+                    <textarea class="form-control" name="text" rows="10" id="reviewform-text" placeholder="Your review should be minimum 50 and maximum 500 characters." maxlength="500"></textarea>
+                </div>
+                <button  class="btn btn-primary" id="review-submit">Submit your Review</button>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+{% endif %}
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg model-dialog-scrollable">
       <div class="modal-content">
         <div class="modal-header">
             <img class="mx-3" src="{% static 'library/images/person.svg' %}" alt="profile" style="max-width:40px;">
-            <h3 class="modal-title fs-5" id="exampleModalLabel">Commander Kenan's Review</h3>
+            <h3 class="modal-title fs-5" id="exampleModalLabel"><span id="modal-username"></span>'s Review</h3>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
             <div class="text-center mb-2">
             <div class="star-outer">
                 <div class="star-inner"></div></div></div>
-            <p id="review-text"></p>
+            <p id="reviewmodal-text"></p>
         </div>
       </div>
     </div>
 </div>
 
 
+
 {% endblock %}
+

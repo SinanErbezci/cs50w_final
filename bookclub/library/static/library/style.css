@@ -10,6 +10,7 @@
     --FS: clamp(1rem, 2.2vh , 1.5rem);
 
     --BGCOLOR1: #F5EFDC;
+    --COLOR-GOLD: #D4AF37;
     --FONTCOLOR: #333;
 
     --bs-font-sans-serif: "Libre Baskerville", serif;
@@ -208,8 +209,12 @@ width: 100%;
 }
 
 .star-outer::before {
-    content: url(./images/star_icon_fill.svg) url(./images/star_icon.svg) url(./images/star_icon.svg) url(./images/star_icon.svg) url(./images/star_icon.svg);
+    content: url(./images/star_icon.svg) url(./images/star_icon.svg) url(./images/star_icon.svg) url(./images/star_icon.svg) url(./images/star_icon.svg);
     
+}
+
+.star-inner::before {
+    content: url(./images/star_icon_fill.svg) url(./images/star_icon_fill.svg) url(./images/star_icon_fill.svg) url(./images/star_icon_fill.svg) url(./images/star_icon_fill.svg);
 }
 
 .book-title {
@@ -236,6 +241,27 @@ width: 100%;
 
 .clickme:hover {
     box-shadow: 5px 5px #5D3A1A;
+}
+
+.rating-star {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 2rem;
+}
+
+.rating-star i {
+    cursor: pointer;
+    color: var(--COLOR-GOLD);
+}
+
+.rating-star i:hover {
+    transform: scale(1.1);
+}
+
+.form-feedback {
+    display: none;
 }
 /* #id_username{
 margin-bottom: 20px;

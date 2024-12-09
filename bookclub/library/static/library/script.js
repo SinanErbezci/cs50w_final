@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Submit Check
+    if (submitBtn !== null ){
     submitBtn.addEventListener('click', (event) => {
         event.preventDefault();
         feedbackForm.style.display = 'block';
@@ -57,13 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
         else {      
             feedbackForm.innerHTML = "Please give a Star.";
         }
-    })
+    })}
 
-    readReviewBtns.forEach( (elem) => {
-        elem.addEventListener('click', (item) => {
-            item.
-        })
-    })
+    // readReviewBtns.forEach( (elem) => {
+    //     elem.addEventListener('click', (item) => {
+    //         item.
+    //     })
+    // })
 
     ratingCheck();
 

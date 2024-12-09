@@ -3,16 +3,16 @@
 {% block body %}
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-auto">
+        <div class="col-auto pt-2">
             <img class="card-img-top book-cover mx-auto" src="{{book.cover}}" alt="book cover">
             <div class="d-flex flex-column justify-content-center align-items-center">
             <div class="star-outer mt-2">
-                <div class="star-inner" data-rating="2.3"></div>
+                <div class="star-inner" data-rating="{{book.rating}}"></div>
             </div>
-            <p>4.2 (21 Reviews) </p>
+            <p>{{book.rating}} ({{book.num_ratings}} Reviews) </p>
         </div>
         </div>
-        <div class="col-8 border-start border-2">
+        <div class="col-8 pt-2 author-border">
             <div class="px-3">
                 <h2 class="book-title">{{book.title}}</h2>
                 <h5>by {{book.author}}</h5>
@@ -25,7 +25,7 @@
                 <div class="mb-2 overflow-auto">
                 <p class="text-nowrap"><span class="text-decoration-underline">Genres:</span>
                 {% for genre in book.genres.all %}
-                <span class="mx-2 fw-bolder">{{genre.name}}</span>
+                <span class="mx-2 fw-bolder"><a class="book-link" href="{% url 'genre' genre.id %}">{{genre.name}}</a></span>
                 {% empty %}
                     <span>no genre</span>
                 {% endfor %}
@@ -45,6 +45,24 @@
     {% endfor %}
     {% endif %}
     </div>
+    {% if user_review %}
+        <div class="row ms-5">
+            <h3 class="mt-2 text-decoration-underline text-center">Your Review</h3>
+            <div class="card mb-3 clickme border">
+                <div class="col">
+                    <div class="card-body">
+                    <h5 class="card-title text-center">
+                        <div class="star-outer">
+                        <div class="star-inner" data-rating="{{user_review.rating}}"></div>
+                    </div></h5>
+                    <p class="card-text twoliner">{{user_review.text}}</p>
+                    <p class="card-text"><small class="text-muted">Review on {{user_review.date}}</small><button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal" id="read-review">Edit</button></p>
+                    </div>
+                </div>
+                </div>
+        </div>
+        <div class="ms-5 mb-3 border-bottom border-primary border-2"></div>
+    {% endif %}
     {% if reviews %}
         {% for review in reviews %}
         <div class="row ms-5">
@@ -69,10 +87,14 @@
         </div>
         {% endfor %}
     {% else %}
-    <h3 class="text-center mt-3">No reviews yet.</h3>
+        {% if user_review %}
+            <h3 class="text-center mt-3">No other reviews yet.</h3>
+        {% else %}
+            <h3 class="text-center mt-3">No reviews yet.</h3>
+        {% endif %}
     {% endif %}
 </div>
-{% if user.is_authenticated %}
+{% if user.is_authenticated and not user_review %}
 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formModal">Write a Review</button>
 <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg model-dialog-scrollable">

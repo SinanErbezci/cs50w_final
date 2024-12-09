@@ -6,9 +6,12 @@ from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
 from django.views import generic
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
 from .models import Book, Author, User, Genres, Review
 from .forms import NameForm, ContactForm, CreateUserFrom
 from random import choice
+from decimal import Decimal
 
 def index(request):
     hello = "hello, world"
@@ -109,40 +112,74 @@ def browse_book(request, book_id):
         rating = request.POST["rating"]
         rating = int(rating)
 
+        user_review = Review.objects.filter(book_id_id = book_id, user_id_id = request.user.id)
+        if user_review:
+            print("user has review")
+            return redirect("index")
         review = Review(book_id_id=book_id, user_id_id=request.user.id, rating=rating, text=text)
         review.save()
         messages.success(request, "You've succesfully submitted your review.")
         
-        print("text ->", text)
-        print("rating ->", rating)
+        # Update Ratings
+        book = Book.objects.get(pk=book_id)
+        num_ratings = book.num_ratings
+        book_rating = book.rating
+        new_total = num_ratings * book_rating + rating
+        new_rating =  Decimal(new_total/(num_ratings + 1)).quantize(Decimal("1.0"))
+        book.num_ratings = num_ratings + 1
+        book.rating = new_rating
+        book.save()
+
     
     content = {}
     if book_id:
+        if request.user.is_authenticated:
+            user_review = Review.objects.filter(book_id_id = book_id, user_id_id = request.user.id)
+            if user_review:
+                content["user_review"] = user_review[0]
+            else:
+                content["user_review"] = None
+
         book = Book.objects.get(pk=book_id)
         content["book"] = book
-        reviews = Review.objects.filter(book_id = book)
+        reviews = Review.objects.filter(book_id = book).exclude(user_id_id = request.user.id)
         content["reviews"] = reviews
+
 
     else:
         content["name"] = "home of books"
     
-    return render(request, "library/book.html", content)
+    return render(request, "library/browse_book.html", content)
     
-def browse_author(request, author_name=""):
+def browse_author(request, author_id):
     content = {}
-    if author_name:
-        content["name"] = author_name
-    else:
-        content["name"] = "home of authors"
-    
-    return render(request, "library/browse.html", content)
+    try:
+        author = Author.objects.get(pk=author_id)
+    except ObjectDoesNotExist:
+        return redirect("index")
 
-def browse_genre(request, genre_name=""):
+    content["author"] = author
+    print(author)
+    books = author.books.all()
+    content["books"] = books
+    if books.count() > 4:
+        content["over"] = True
+    else:
+        content["over"] = False
+    return render(request, "library/browse_author.html", content)
+
+def browse_genre(request, genre_id):
     content = {}
-    if genre_name:
-        content["name"] = genre_name
-    else:
-        content["name"] = "home of genres"
-    
-    return render(request, "library/browse.html", content)
+    try:
+        genre = Genres.objects.get(pk = genre_id)
+        content["name"] = genre.name
+    except ObjectDoesNotExist:
+        return redirect("index")
 
+    paginator = Paginator(genre.books.all(), 4)
+    page_num = request.GET.get('page')
+    page_obj = paginator.get_page(page_num)
+    content["page_obj"] = page_obj
+
+    
+    return render(request, "library/browse_genre.html", content)

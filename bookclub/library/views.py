@@ -84,7 +84,7 @@ def browse(request):
     pks = Author.objects.values_list('pk', flat=True)
     random_pk = choice(pks)
     random_obj = Author.objects.get(pk=random_pk)
-    content["author_name"] = random_obj
+    content["author"] = random_obj
     content["author_books"] = random_obj.books.all()
     if random_obj.books.count() > 4:
         content["author_over"] = True
@@ -95,7 +95,7 @@ def browse(request):
     pks = Genres.objects.values_list('pk', flat=True)
     random_pk = choice(pks)
     random_obj = Genres.objects.get(pk=random_pk)
-    content["genre_name"] = random_obj
+    content["genre"] = random_obj
     content["genre_books"] = random_obj.books.all()[:10]
     if random_obj.books.count() > 4:
         content["genre_over"] = True

@@ -1,106 +1,127 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>{% block title %}{% endblock %}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta charset="UTF-8">
-        <link rel="icon" type="image/x-icon" href="{% static 'library/images/favicon.ico' %}">
-        <link href="{% static 'library/main.min.css' %}" rel="stylesheet">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <script src="https://kit.fontawesome.com/c14d20fdb9.js" crossorigin="anonymous"></script>
-        <!-- <link rel="stylesheet" href="{% static 'library/style.css' %}"> -->
-        <link rel="stylesheet" href="{% static 'library/style.css' %}">
-      </head>
-      <body>
-        <header>
-        <nav class="navbar navbar-expand-lg py-2 py-lg-0">
-            <div class="container-fluid nav-contain p-2 ms-4 me-4">
-                <a href="{% url 'index' %}"><img class="brand-img me-4" src="{% static 'library/images/svg.svg'%}" alt="logo"></a>
-                <form class="container me-3" role="search">
-                    <div class="input-group">
-                        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-                    </div>
-                </form>
 
-                <button class="navbar-toggler border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#top-navbar" aria-controls="top-navbar">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                
-                <div class="offcanvas offcanvas-end" tabindex="-1" id="top-navbar" aria-labelledby="top-navbarLabel">
-                    <button class="navbar-toggler border" type="button" data-bs-toggle="offcanvas" data-bs-target="#top-navbar" aria-controls="top-navbar">
-                        <div class="d-flex justify-content-between p-3">
-                            <img class="brand-img" src="{% static 'library/images/svg.svg' %}" alt="logo">
-                            <span class="navbar-toggler-icon"></span>
-                        </div>
-                    </button>
-                    {% if user.is_authenticated %}
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Browse</a>
-                            <div class="dropdown-menu">
-                                <div class="row">
-                                    <div class="d-flex nav-options">
-                                    <a class="dropdown-item" href="#">Books</a>
-                                    <a class="dropdown-item" href="#">Authors</a>
-                                    <a class="dropdown-item" href="#">Lists</a>
-                                    <a class="dropdown-item" href="#">Genres</a>
-                                    </div>
-                                </div>  
-                            </div>
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-user"></i></a>
-                                <div class="dropdown-menu">
-                                    <div class="row">
-                                        <div class="d-flex nav-options">
-                                        <a class="dropdown-item" href="#">Profile</a>
-                                        <a class="dropdown-item" href="#">My Books</a>
-                                        <a class="dropdown-item" href="#">Reading Challenge</a>
-                                        </div>
-                                    </div>  
-                                </div>
-                              </li>
-                              <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-users"></i></a>
-                                <div class="dropdown-menu">
-                                    <div class="row">
-                                        <div class="d-flex nav-options">
-                                        <a class="dropdown-item" href="#">Messages</a>
-                                        <a class="dropdown-item" href="#">Friends</a>
-                                        <a class="dropdown-item" href="#">Groups</a>
-                                        </div>
-                                    </div>  
-                                </div>
-                              </li>
-                              <li class="nav-item">
-                                <a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
-                              </li>
-                    </ul>
-                    {% else %}
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">Browse</a>
-                            <div class="dropdown-menu">
-                                <div class="row">
-                                    <div class="d-flex nav-options">
-                                    <a href="{% url 'browse' %}" class="dropdown-item" href="#">Books</a>
-                                    <a href="{% url 'genres' %}" class="dropdown-item" href="#">Genres</a>
-                                    </div>
-                                </div>  
-                            </div>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link nav-login" href="{% url 'login' %}">Log In</a>
-                        </li>
-                    </ul>
-                    {% endif %}
-                </div>
+<head>
+  <title>{% block title %}{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <link rel="icon" type="image/x-icon" href="{% static 'library/images/favicon.ico' %}">
+  <link href="{% static 'library/main.min.css' %}" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://kit.fontawesome.com/c14d20fdb9.js" crossorigin="anonymous"></script>
+  <!-- <link rel="stylesheet" href="{% static 'library/style.css' %}"> -->
+  <link rel="stylesheet" href="{% static 'library/style.css' %}">
+</head>
+
+<body>
+  <header>
+    <nav class="navbar navbar-expand-lg  flex-nowrap">
+      <div class="container-fluid">
+        <a href="{% url 'index' %}"><img class="brand-img me-2 ms-3" src="{% static 'library/images/svg.svg'%}"
+            alt="logo"></a>
+        <div class="container search-bar">
+          <div class="input-group search-bar-input">
+            <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn search-btn" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+          </div>
+          <div class="search-bar-results ">
+            <div class="search-result">
+              <a href="" class="search-result-title book-link">Harry Potter bla</a>
+              <span class="search-result-type ">book</span>
             </div>
-        </nav>
-    </header>
-    {% block body %}{% endblock %}
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-        <script src="{% static 'library/script.js' %}"></script>
-    </body>
+            <div class="search-result">
+              <a href="" class="search-result-title book-link">Harry Potter bla</a>
+              <span class="search-result-type ">book</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="top-navbar" aria-labelledby="top-navbarLabel">
+          <button class="navbar-toggler border" type="button" data-bs-toggle="offcanvas" data-bs-target="#top-navbar"
+            aria-controls="top-navbar">
+            <div class="d-flex justify-content-between p-3">
+              <img class="brand-img" src="{% static 'library/images/svg.svg' %}" alt="logo">
+              <span class="navbar-toggler-icon"></span>
+            </div>
+          </button>
+          {% if user.is_authenticated %}
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">Browse</a>
+              <div class="dropdown-menu">
+                <div class="row">
+                  <div class="d-flex nav-options">
+                    <a class="dropdown-item" href="#">Books</a>
+                    <a class="dropdown-item" href="#">Authors</a>
+                    <a class="dropdown-item" href="#">Lists</a>
+                    <a class="dropdown-item" href="#">Genres</a>
+                  </div>
+                </div>
+              </div>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false"><i class="fa-solid fa-user"></i></a>
+              <div class="dropdown-menu">
+                <div class="row">
+                  <div class="d-flex nav-options">
+                    <a class="dropdown-item" href="#">Profile</a>
+                    <a class="dropdown-item" href="#">My Books</a>
+                    <a class="dropdown-item" href="#">Reading Challenge</a>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false"><i class="fa-solid fa-users"></i></a>
+              <div class="dropdown-menu">
+                <div class="row">
+                  <div class="d-flex nav-options">
+                    <a class="dropdown-item" href="#">Messages</a>
+                    <a class="dropdown-item" href="#">Friends</a>
+                    <a class="dropdown-item" href="#">Groups</a>
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'logout' %}"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+            </li>
+          </ul>
+          {% else %}
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">Browse</a>
+              <div class="dropdown-menu">
+                <div class="row">
+                  <div class="d-flex nav-options">
+                    <a href="{% url 'browse' %}" class="dropdown-item" href="#">Books</a>
+
+                  </div>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link nav-login" href="{% url 'login' %}">Log In</a>
+            </li>
+          </ul>
+          {% endif %}
+        </div>
+        <button class="navbar-toggler ms-3" type="button" data-bs-toggle="offcanvas" data-bs-target="#top-navbar"
+          aria-controls="offcanvasNavbar">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+  {% block body %}{% endblock %}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="{% static 'library/script.js' %}"></script>
+</body>
+
 </html>

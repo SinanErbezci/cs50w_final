@@ -23,7 +23,7 @@
 </section>
 <div class="pattern"></div>
 <section class="author">
-    <h1 class="mt-4 text-center">Check out books from <span class="text-decoration-underline">{{author_name}}</span></h1>
+    <h1 class="mt-4 text-center">Check out books from <a  href="{% url 'author' author.id %}"><span class="text-decoration-underline">{{author.name}}</span></a></h1>
     <div class="container mb-4 overflow-auto">
         {% if author_over %}
                 <div class="row gx-2 gy-2 row-cols-1 row-cols-sm-2 row-cols-lg-4 flex-nowrap">
@@ -47,7 +47,7 @@
 </section>
 <div class="pattern"></div>
 <section class="genre">
-    <h1 class="mt-4 text-center">Check out genre of <span class="text-decoration-underline">{{genre_name}}</span></h1>
+    <h1 class="mt-4 text-center">Check out genre of <a href="{% url 'genre' genre.id %}"><span class="text-decoration-underline">{{genre.name}}</span></a></h1>
     <div class="container mb-4 overflow-auto">
         {% if genre_over %}
             <div class="row gx-2 gy-2 row-cols-1 row-cols-sm-2 row-cols-lg-4 flex-nowrap">

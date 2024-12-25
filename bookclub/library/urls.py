@@ -15,4 +15,8 @@ urlpatterns = [
     path("browse/books/<int:book_id>", views.browse_book, name="book"),
     path("browse/genres/<int:genre_id>", views.browse_genre, name="genre"),
     path("browse/authors/<int:author_id>", views.browse_author, name="author"),
+
+    # API Search
+
+    path("search", views.search, name="search"),
 ]

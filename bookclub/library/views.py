@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404,redirect
-from django.http import HttpResponse, Http404, HttpResponseRedirect
+from django.http import HttpResponse, Http404, HttpResponseRedirect, JsonResponse
 from django.db import IntegrityError
 from django.contrib import messages
 from django.contrib.auth import authenticate,login, logout
@@ -10,8 +10,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from .models import Book, Author, User, Genres, Review
 from .forms import NameForm, ContactForm, CreateUserFrom
+from .documents import BookDocument, AuthorDocument, GenreDocument
 from random import choice
 from decimal import Decimal
+import json
 
 def index(request):
     hello = "hello, world"
@@ -183,3 +185,42 @@ def browse_genre(request, genre_id):
 
     
     return render(request, "library/browse_genre.html", content)
+
+# API Route Search
+def search(request):
+    query = request.GET.get("q")
+    result = {}
+    if not query:
+        return JsonResponse({"error": "no query"}, status=400)
+    
+    long = request.GET.get("long")
+    short = request.GET.get("short")
+    
+    if short == "":
+        result["type"] = "short"
+    elif long == "":
+        result["type"] = "long"
+    else:
+        return JsonResponse({"error":"no type"}, status=400)
+
+    b = BookDocument.search().query("match", title=query)[0:5]
+    result["data"] = {"book": None, "genre":None, "author":None}
+    
+    books_dict = {}
+    for book in b:
+        books_dict[book.title] = book.meta.id
+    result["data"]["book"] = books_dict
+
+    g = GenreDocument.search().query("match", name=query)[0:5]
+    genres_dict = {}
+    for genre in g:
+        genres_dict[genre.name] = genre.meta.id
+    result["data"]["genre"] = genres_dict
+
+    a = AuthorDocument.search().query("match", name=query)[0:5]
+    authors_dict = {}
+    for author in a:
+        authors_dict[author.name] = author.meta.id
+    result["data"]["author"] = authors_dict
+
+    return JsonResponse(result, safe=False)

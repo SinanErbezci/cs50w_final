@@ -40,12 +40,15 @@
             </div>
             <div class="col-lg-auto align-self-center mx-4">
                 <div class="row">
-                    <ul class="list-group list-group-flush  pt-2">
-                        <a href="{% url 'browse' %}" class="list-group-item d-flex justify-content-between list-group-item-action h2">Books <i class="bi bi-cursor-fill ps-2"></i></a>
+                    <ul class="list-group list-group-flush pt-2">
+                        <p class="list-group-item d-flex justify-content-between  h2">Books <i class="bi bi-cursor-fill ps-2"></i></p>
+                        <p class="list-group-item d-flex justify-content-between  h2">Genres <i class="bi bi-cursor-fill ps-2"></i></p>
+                        <p class="list-group-item d-flex justify-content-between  h2">Authors <i class="bi bi-cursor-fill ps-2"></i></p>
                     </ul>
                   </div>
             </div>
-        </div>
+            <h2 class="pt-2 text-center"><i class="fa-solid fa-arrow-rotate-right"></i> <a href="{% url 'search' %}" class="book-link">Search</a> now or just <a href="{% url 'browse' %}" class="book-link">Browse <i class="fa-solid fa-arrow-rotate-left"></i></a></h2>
+        </div>  
     </div>
 </section>
 

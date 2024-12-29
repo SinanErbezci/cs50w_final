@@ -56,7 +56,7 @@
                         <div class="star-inner" data-rating="{{user_review.rating}}"></div>
                     </div></h5>
                     <p class="card-text twoliner">{{user_review.text}}</p>
-                    <p class="card-text"><small class="text-muted">Review on {{user_review.date}}</small><button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal" id="read-review">Edit</button></p>
+                    <p class="card-text"><small class="text-muted">Review on {{user_review.date}}</small><button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal" id="read-review" data-username="{{user_review.user_id.username}}">Read Review</button></p>
                     </div>
                 </div>
                 </div>
@@ -79,7 +79,7 @@
                         <div class="star-inner" data-rating="{{review.rating}}"></div>
                     </div></h5>
                     <p class="card-text twoliner">{{review.text}}</p>
-                    <p class="card-text"><small class="text-muted">Review on {{review.date}}</small><button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal" id="read-review">Read Review</button></p>
+                    <p class="card-text"><small class="text-muted">Review on {{review.date}}</small><button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal" id="read-review" data-username="{{review.user_id.username}}">Read Review</button></p>
                     </div>
                 </div>
                 </div>
@@ -95,7 +95,8 @@
     {% endif %}
 </div>
 {% if user.is_authenticated and not user_review %}
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#formModal">Write a Review</button>
+<div class="container text-center">
+<button type="button" class="btn btn-primary btn-lg mt-3 text-center " data-bs-toggle="modal" data-bs-target="#formModal">Write a Review</button>
 <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg model-dialog-scrollable">
       <div class="modal-content">
@@ -125,6 +126,7 @@
       </div>
     </div>
 </div>
+</div>
 {% endif %}
 
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -138,14 +140,14 @@
         <div class="modal-body">
             <div class="text-center mb-2">
             <div class="star-outer">
-                <div class="star-inner"></div></div></div>
+                <div class="star-inner" id="modal-star"></div></div></div>
             <p id="reviewmodal-text"></p>
         </div>
       </div>
     </div>
 </div>
-
-
-
+{% endblock %}
+{% block script %}
+<script src="{% static 'library/browse.js' %}" type="module"></script>
 {% endblock %}
 

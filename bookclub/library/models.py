@@ -69,3 +69,7 @@ class Review(models.Model):
     ])
     text = models.TextField(max_length=500)
     date = models.DateField(auto_now_add=True)
+
+class User_Followers(models.Model):
+    follower = models.ForeignKey(User, on_delete=models.CASCADE , related_name="follower")
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")

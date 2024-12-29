@@ -8,12 +8,13 @@ from django.views import generic
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
-from .models import Book, Author, User, Genres, Review
+from .models import Book, Author, User, Genres, Review, User_Followers
 from .forms import NameForm, ContactForm, CreateUserFrom
 from .documents import BookDocument, AuthorDocument, GenreDocument
 from random import choice
 from decimal import Decimal
-import json
+from elasticsearch_dsl.query import Match
+
 
 def index(request):
     hello = "hello, world"
@@ -186,41 +187,91 @@ def browse_genre(request, genre_id):
     
     return render(request, "library/browse_genre.html", content)
 
-# API Route Search
 def search(request):
+    query = request.GET.get("q")
+    option = request.GET.get("option")
+
+    if query:
+        if option == "book" or option is None:
+            search_q = Match(title = {"query": query, "fuzziness" :"AUTO"})
+            books = BookDocument.search().query(search_q).to_queryset()
+            option = "book"
+            item_per_page = 4
+        elif option == "genre":
+            search_q = Match(name = {"query": query, "fuzziness" :"AUTO"})
+            books = GenreDocument.search().query(search_q).to_queryset()
+            item_per_page = 8
+        else:
+            search_q = Match(name = {"query":query, "fuzziness":"AUTO"})
+            books = AuthorDocument.search().query(search_q).to_queryset()
+            item_per_page = 8
+        
+        if books.count() == 0:
+            content = {"noresult" : True}
+        else:
+            books_paginated = Paginator(books, item_per_page)
+            page_num = request.GET.get("page")
+            page_obj = books_paginated.get_page(page_num)
+            content = {"page_obj" : page_obj}
+        content["query"] = query
+        content["option"] = option
+    else:
+        content = {}
+
+    return render(request, "library/search.html", content)
+
+
+# API Route Search
+def short_search(request):
     query = request.GET.get("q")
     result = {}
     if not query:
         return JsonResponse({"error": "no query"}, status=400)
-    
-    long = request.GET.get("long")
-    short = request.GET.get("short")
-    
-    if short == "":
-        result["type"] = "short"
-    elif long == "":
-        result["type"] = "long"
-    else:
-        return JsonResponse({"error":"no type"}, status=400)
 
-    b = BookDocument.search().query("match", title=query)[0:5]
     result["data"] = {"book": None, "genre":None, "author":None}
     
+    search_q = Match(title = {"query":query, "fuzziness":"AUTO"})
+    b = BookDocument.search().query(search_q)[0:5]
     books_dict = {}
     for book in b:
         books_dict[book.title] = book.meta.id
     result["data"]["book"] = books_dict
 
-    g = GenreDocument.search().query("match", name=query)[0:5]
+    search_q = Match(name = {"query":query, "fuzziness":"AUTO"})
+    g = GenreDocument.search().query(search_q)[0:5]
     genres_dict = {}
     for genre in g:
         genres_dict[genre.name] = genre.meta.id
     result["data"]["genre"] = genres_dict
 
-    a = AuthorDocument.search().query("match", name=query)[0:5]
+    search_q = Match(name = {"query":query, "fuzziness":"AUTO"})
+    a = AuthorDocument.search().query(search_q)[0:5]
     authors_dict = {}
     for author in a:
         authors_dict[author.name] = author.meta.id
     result["data"]["author"] = authors_dict
 
     return JsonResponse(result, safe=False)
+
+def follow(request):
+    if request.method == "POST":
+        pass
+    else:
+        return redirect("index")
+
+def profile(request):
+    if request.user.is_authenticated:
+        user = User.objects.get(pk=request.user.id)
+        reviews = Review.objects.all().filter(user_id = user)
+        followers = User_Followers.objects.all().filter(follower = user)
+        content = {"user": user, "reviews":reviews, "followers":followers}
+        return render(request, "library/profile.html",content)
+    else:
+        return redirect("index")
+
+def user_profile(request,user_id):
+    user = User.objects.get(pk=user_id)
+    # reviews = Review.objects.get(user_id = user)
+    # print("review ->",reviews)
+    content = {"user": user, "reviews":None}
+    return render(request, "library/user_profile.html", content)

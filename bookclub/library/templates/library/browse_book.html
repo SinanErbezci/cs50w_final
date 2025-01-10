@@ -14,7 +14,16 @@
         </div>
         <div class="col-8 pt-2 author-border">
             <div class="px-3">
+                {% if request.user.is_authenticated %}
+                <span class="d-none" id="csrf_token">{{csrf_token}}</span>
+                    {% if listed %}
+                <h2 class="book-title">{{book.title}}<button href="#" class="btn btn-primary ms-2" rel="popover" id="list-action" data-bs-toggle="popover" data-listid={{listid}}>Remove from List</button>
+                    {% else %}
+                <h2 class="book-title">{{book.title}}<button href="#" class="btn btn-outline-primary ms-2" rel="popover" id="list-action" data-bs-toggle="popover" >Add your list</button></h2>
+                    {% endif %}
+                {% else %}
                 <h2 class="book-title">{{book.title}}</h2>
+                {% endif %}
                 <h5>by <a class="book-link" href="{% url 'author' book.author.id %}">{{book.author}}</a></h5>
                 <div class="book-desc">
                     <p class="mb-0 collapse" id="collapse-desc">{{book.description}}</p>

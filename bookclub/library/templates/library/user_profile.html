@@ -9,11 +9,11 @@
         <div class="col-auto col-md-auto author-border">
             <div class="px-3 pt-2">
                 {% if request.user.is_authenticated %}
-                <form action="{% url 'follow' %}" method="post">
-                {% csrf_token %}
-                <input type="button" name="following" id="follow" autocomplete="off" value="{{user.id}}" hidden>
-                <h1 class="book-title">{{user.username}} <span class="h6"><label for="follow"><i class="fa-solid fa-plus"></i>Follow</label></span></input></h1>
-                </form>
+                {% if follow_bool %}
+                <h1 class="book-title">{{user.username}} <span><button class="btn btn-primary" id="follow" data-userid="{{user.id}}">Following</button></span></h1>
+                {% else %}
+                <h1 class="book-title">{{user.username}} <span><button class="btn btn-outline-primary" id="follow" data-userid="{{user.id}}">Follow</button></span></h1>
+                {% endif %}
                 {% else %}
                 <h1 class="book-title">{{user.username}}</h1>
                 {% endif %}
@@ -84,6 +84,7 @@
 <div class="container mt-3">
     <p>Your Lists</p>
 </div>
-
-
+{% endblock %}
+{% block script %}
+<script src="{% static 'library/follow.js' %}" type="module"></script>
 {% endblock %}

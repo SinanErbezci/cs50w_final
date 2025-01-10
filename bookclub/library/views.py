@@ -4,16 +4,19 @@ from django.db import IntegrityError
 from django.contrib import messages
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.csrf import csrf_exempt
 from django.views import generic
 from django.urls import reverse
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
-from .models import Book, Author, User, Genres, Review, User_Followers
+from .models import Book, Author, User, Genres, Review, User_Followers, Lists, ListBooks
 from .forms import NameForm, ContactForm, CreateUserFrom
 from .documents import BookDocument, AuthorDocument, GenreDocument
 from random import choice
 from decimal import Decimal
 from elasticsearch_dsl.query import Match
+import json
 
 
 def index(request):
@@ -138,6 +141,13 @@ def browse_book(request, book_id):
     if book_id:
         if request.user.is_authenticated:
             user_review = Review.objects.filter(book_id_id = book_id, user_id_id = request.user.id)
+            onlist = ListBooks.objects.filter(book__id = book_id, owner_list__owner__id = request.user.id)
+            if onlist:
+                content["listed"] = True
+                content["listid"] = onlist[0].id
+            else:
+                content["listed"] = False
+                
             if user_review:
                 content["user_review"] = user_review[0]
             else:
@@ -253,25 +263,98 @@ def short_search(request):
 
     return JsonResponse(result, safe=False)
 
-def follow(request):
+@login_required
+@csrf_exempt 
+def follow(request, user_id):
     if request.method == "POST":
-        pass
-    else:
-        return redirect("index")
+        follower = User.objects.get(pk=request.user.id)
+        following = User.objects.get(pk=user_id)
+        data = json.loads(request.body)
+        if data["text"] == "follow":
+            follow = User_Followers.objects.create(follower = follower, following = following)
+            follow.save()
+        elif data["text"] == "unfollow":
+            follow = User_Followers.objects.get(follower = follower, following = following)
+            follow.delete()
+    
+    return redirect("index")
 
 def profile(request):
     if request.user.is_authenticated:
         user = User.objects.get(pk=request.user.id)
         reviews = Review.objects.all().filter(user_id = user)
         followers = User_Followers.objects.all().filter(follower = user)
+        print(followers[0].following.id)
         content = {"user": user, "reviews":reviews, "followers":followers}
         return render(request, "library/profile.html",content)
     else:
         return redirect("index")
 
 def user_profile(request,user_id):
+    content = {}
+    if request.user.is_authenticated:
+        if request.user.id == user_id:
+            return redirect("profile")
+        
+        try:
+            follow_bool = User_Followers.objects.get(follower__id = request.user.id, following__id = user_id)
+            follow_bool = True
+        except:
+            follow_bool = False
+        content["follow_bool"] = follow_bool
+        
     user = User.objects.get(pk=user_id)
+    # reviews
+    # lists
+
+    content["user"] =  user
+    content["reviews"] = None
+
+    if request.user.is_authenticated:
+        try:
+            follow_bool = User_Followers.objects.get(follower__id = request.user.id, following__id = user_id)
+            follow_bool = True
+        except:
+            follow_bool = False
+        content["follow_bool"] = follow_bool
+    
     # reviews = Review.objects.get(user_id = user)
     # print("review ->",reviews)
-    content = {"user": user, "reviews":None}
     return render(request, "library/user_profile.html", content)
+
+@login_required
+def listing(request):
+    if request.method == "GET":
+        # give users list
+        output = {}
+        user_lists = Lists.objects.filter(owner__id = request.user.id)
+        if user_lists:
+            for item in user_lists:
+                output[item.id] = item.name
+        return JsonResponse(output)
+    elif request.method == "POST":
+        if request.GET.get("q") == "create":
+        # create new list and add the book to the list
+            new_list = Lists.objects.create(owner_id=request.user.id, name=request.POST["list-name"])
+            new_book_list = ListBooks.objects.create(owner_list = new_list, book_id=request.POST["book"])
+        elif request.GET.get("q") == "add":
+            new_book_list = ListBooks.objects.create(owner_list_id = request.POST["list-id"], book_id = request.POST["book"])
+            print(new_book_list)
+
+        if "HTTP_REFERER" in request.META:
+            return redirect(request.META["HTTP_REFERER"])
+        else:
+            return redirect("index")
+
+    # add the book to a list
+
+
+    # user_list = Lists.objects.filter(owner__id = request.user.id)
+    # output = {}
+    # if user_list:
+    #     for item in user_list:
+    #         books_list = ListBooks.objects.filter(owner_list=item)
+    #         for book in books_list:
+    #             output[book.book.id] = book.book.title
+
+    

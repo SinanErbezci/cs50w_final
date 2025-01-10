@@ -11,7 +11,11 @@ const readReviewBtns = document.querySelectorAll('#read-review');
 const reviewWriter = document.querySelector("#modal-username");
 const reviewText = document.querySelector("#reviewmodal-text");
 const reviewStar = document.querySelector("#modal-star");
-
+// Popover
+const popoverBtn = document.querySelector("#list-action");
+var userLists;
+const CSRF_TOKEN = document.querySelector("#csrf_token").innerHTML;
+const BOOK_ID = window.location.pathname.split('/')[3];
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -55,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 feedbackForm.innerHTML = "Your review should not exceed 500 characters."
             }
             else {
-                console.log("good");
                 reviewForm.submit();
             }
         }
@@ -72,10 +75,39 @@ document.addEventListener('DOMContentLoaded', () => {
             ratingCheck(false, rating)
         })
     })
-
+    
     ratingCheck(true, null);
 
+    async function gettingData() {
+        await getUserLists();
+        popoverInit()
+
+        popoverBtn.addEventListener("click", () => {
+            if (popoverBtn.innerHTML === "Remove from List"){
+                popoverInit();
+            }
+            else{
+                popoverInit();
+                setTimeout(populateDrop, 200);
+                setTimeout(createListPop, 200);
+                
+            }
+
+        });
+
+        window.addEventListener('click', (e) => {
+            if(document.querySelector(".popover").contains(e.target)){
+                return
+            } else {
+                closeAllPops();
+            }
+        });
+    }
+    gettingData();
 });
+
+
+    
 
 function checkButton() {
     if (descP.scrollHeight > descP.clientHeight) {
@@ -106,4 +138,81 @@ function ratingCheck(all, rate) {
     else {
         reviewStar.style.width = `${Math.round(Number(rate)*20)}%`;
     }
+}
+
+function popoverInit() {
+    if (popoverBtn.dataset.list === "remove") {
+        const popover = new bootstrap.Popover(popoverBtn, {
+            html: true,
+            title: "Remove from List",
+            content: `<button class='btn'>Yes</button>
+            <button class='btn'>No</button>`,
+            sanitize: false
+        });
+    }
+    else{
+        let dropItem = "";
+        if (Object.entries(userLists).length > 0) {
+            for (const item in userLists) {
+                dropItem += `<li><button class="dropdown-item type="submit" name="list-id" value="${item}">${userLists[item]}</button></li>`
+            }
+        }
+        console.log(dropItem);
+        let dropContent = `<div class='d-flex'>
+                <form action="/listing?q=add" method="post">
+                <input type="hidden" name="csrfmiddlewaretoken" value="${CSRF_TOKEN}">
+                <input type="hidden" name="book" value="${BOOK_ID}">
+                <div class='dropdown mx-2'>
+                <button class='btn btn-primary dropdown-toggle' data-bs-toggle='dropdown' id='list-drop'>Add</button>
+                <ul class="dropdown-menu">` + dropItem + `</ul></div></form>
+                <div class='dropdown'>
+                <button class='btn btn-secondary' id="create-list" data-bs-toggle='popover' rel='popover'>Create</button></div>
+                </div>`
+        console.log(dropContent);
+        const popover = bootstrap.Popover.getOrCreateInstance(popoverBtn, {
+            html: true,
+            title: "<h5>Add List or Create</h5>",
+            content: dropContent,
+            sanitize: false,
+            trigger: 'click manual'
+        });
+    }}
+    
+function populateDrop(){
+    const dropElem = document.querySelector("#list-drop");
+
+    const dropBs = new bootstrap.Dropdown(dropElem);
+}
+
+function createListPop() {
+    const createElem = document.querySelector("#create-list");
+    const createPopover = new bootstrap.Popover(createElem, {
+        html: true,
+        sanitize: false,
+        content: `<form action="/listing?q=create" method="post">
+        <input type="hidden" name="csrfmiddlewaretoken" value="${CSRF_TOKEN}">
+        <input type="hidden" name="book" value="${BOOK_ID}">
+        <div class="input-group mb-3">
+        <input type="text" name="list-name" class="form-control" placeholder="Name of new list" aria-label="Name of the new list" aria-describedby="button-addon2">
+        <button class="btn btn-primary " type="submit" id="button-addon2"><i class="bi bi-check-lg"></i></button>
+        </div></form>`, 
+        placement: 'bottom',
+    });
+}
+
+function closeAllPops() {
+    const popElems = document.querySelectorAll('[data-bs-toggle="popover"]');
+    popElems.forEach((item) => {
+        let popBoot = bootstrap.Popover.getInstance(item);
+        popBoot.hide();
+    })
+}
+
+async function getUserLists() {
+    return fetch('/listing')
+    .then(response => response.json())
+    .then((responseData) => {
+        userLists = responseData;
+    })
+    .catch(error => console.error('Error:', error));
 }

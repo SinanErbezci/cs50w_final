@@ -25,5 +25,10 @@ urlpatterns = [
 
     # API Search, Follow
     path("short", views.short_search, name="short_search"),
-    path("follow", views.follow, name="follow" )
+    path("follow/<int:user_id>", views.follow, name="follow"),
+
+    # API List
+    path("listing", views.listing, name="listing")
+
+
 ]

@@ -73,3 +73,11 @@ class Review(models.Model):
 class User_Followers(models.Model):
     follower = models.ForeignKey(User, on_delete=models.CASCADE , related_name="follower")
     following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
+
+class Lists(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="owner")
+    name = models.CharField(max_length=100)
+
+class ListBooks(models.Model):
+    owner_list = models.ForeignKey(Lists, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)

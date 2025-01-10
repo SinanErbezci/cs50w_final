@@ -18,7 +18,7 @@
 </div>
 
 <div class="container mt-5" style="max-width: 1200px;">
-    <h2 class="ms">Your Reviews</h2>
+    <h2 class="ms border-bottom p-2">Your Reviews</h2>
     {% for review in reviews %}
     <div class="row ms-5">
         <div class="card mb-3 clickme border">
@@ -41,12 +41,34 @@
         </div>
     </div>
     {% empty %}
-    <h5 class="text-center">No reviews yet.</h5>
+    <h5 class="text-center mt-3">No reviews yet.</h5>
     {% endfor %}
 </div>
 
 <div class="container mt-3" style="max-width: 1200px;">
-    <h2 class="ms">People you follow</h2>
+    <h2 class="ms border-bottom p-2">People you follow</h2>
+    <div class="container overflow-auto">
+        <div class="row gx-2 gy-2 row-cols-1 row-cols-sm-2 row-cols-lg-4 flex-nowrap">
+    {% for follow in followers %}
+        <div class="col d-flex align-items-strecth justify-content-center">
+        <div class="card text-center mx-2 bg-primary shadow" style="width: 120px;">
+            <img class="card-img-top mt-3 mx-auto px-2" src="{% static 'library/images/person.svg' %}" alt="book cover" style="max-width: 80px;">
+            <div class="d-flex card-body flex-column justify-content-end " style="max-width:200px;">
+                <div class="twoliner">
+                <a class="book-link fw-bolder fs-5 text-center" href="{% url 'user_profile' follow.id %}">{{follow.following}}</a>
+                </div>
+            </div>
+        </div>
+        </div>
+        {% empty %}
+        <h5 class="text-center mt-3">No follows yet.</h5>
+        {% endfor %}
+    </div>
+    </div>
+</div>
+
+<div class="container mt-3" style="max-width: 1200px;">
+    <h2 class="ms border-bottom p-2">Your Lists</h2>
     {% for review in reviews %}
     <div class="row ms-5">
         <div class="card mb-3 clickme border">
@@ -69,12 +91,8 @@
         </div>
     </div>
     {% empty %}
-    <h5 class="text-center">No reviews yet.</h5>
+    <h5 class="text-center mt-3">No reviews yet.</h5>
     {% endfor %}
-</div>
-
-<div class="container mt-3">
-    <p>Your Lists</p>
 </div>
 
 

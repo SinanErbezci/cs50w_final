@@ -284,8 +284,8 @@ def profile(request):
         user = User.objects.get(pk=request.user.id)
         reviews = Review.objects.all().filter(user_id = user)
         followers = User_Followers.objects.all().filter(follower = user)
-        print(followers[0].following.id)
-        content = {"user": user, "reviews":reviews, "followers":followers}
+        lists = Lists.objects.all().filter(owner = user)
+        content = {"user": user, "reviews":reviews, "followers":followers, "lists":lists}
         return render(request, "library/profile.html",content)
     else:
         return redirect("index")
@@ -325,36 +325,33 @@ def user_profile(request,user_id):
 @login_required
 def listing(request):
     if request.method == "GET":
-        # give users list
-        output = {}
-        user_lists = Lists.objects.filter(owner__id = request.user.id)
-        if user_lists:
-            for item in user_lists:
-                output[item.id] = item.name
-        return JsonResponse(output)
+        if request.GET.get("q"):
+        # give books of a list
+            books = ListBooks.objects.all().filter(owner_list__id = int(request.GET.get("q")))
+            return JsonResponse([book.book.serialize() for book in books], safe=False)
+        else:
+        # give users all the list
+            output = {}
+            user_lists = Lists.objects.filter(owner__id = request.user.id)
+            if user_lists:
+                for item in user_lists:
+                    output[item.id] = item.name
+            return JsonResponse(output)
     elif request.method == "POST":
         if request.GET.get("q") == "create":
         # create new list and add the book to the list
             new_list = Lists.objects.create(owner_id=request.user.id, name=request.POST["list-name"])
             new_book_list = ListBooks.objects.create(owner_list = new_list, book_id=request.POST["book"])
         elif request.GET.get("q") == "add":
+        # add book to a list
             new_book_list = ListBooks.objects.create(owner_list_id = request.POST["list-id"], book_id = request.POST["book"])
             print(new_book_list)
+        elif request.GET.get("q") == "remove":
+        # remove from the list
+            remove_book_list = ListBooks.objects.filter(owner_list_id = request.POST["list"], book_id = request.POST["book"])
+            remove_book_list.delete()
 
         if "HTTP_REFERER" in request.META:
             return redirect(request.META["HTTP_REFERER"])
         else:
             return redirect("index")
-
-    # add the book to a list
-
-
-    # user_list = Lists.objects.filter(owner__id = request.user.id)
-    # output = {}
-    # if user_list:
-    #     for item in user_list:
-    #         books_list = ListBooks.objects.filter(owner_list=item)
-    #         for book in books_list:
-    #             output[book.book.id] = book.book.title
-
-    

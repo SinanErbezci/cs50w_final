@@ -19,30 +19,26 @@
 
 <div class="container mt-5" style="max-width: 1200px;">
     <h2 class="ms border-bottom p-2">Your Reviews</h2>
+    <div class="row row-cols-2" >
     {% for review in reviews %}
-    <div class="row ms-5">
+        <div class="col">
         <div class="card mb-3 clickme border">
-            <div class="row flex-nowrap">
-            <div class="col-md-2 d-flex flex-column justify-content-center align-items-center ">
-                <img class="m-auto" src="{% static 'library/images/person.svg' %}" alt="profile" style="max-width:80px;">
-                <p class="mx-auto oneliner">{{review.user_id.username}}</p>
-            </div>
-            <div class="col-md-9">
+            <div class="col">
                 <div class="card-body">
                 <h5 class="card-title">
                     <div class="star-outer">
-                    <div class="star-inner" data-rating="{{review.rating}}"></div>
-                </div></h5>
+                    <div class="star-inner" data-rating="{{review.rating}}"></div></div>
+                    <a href="{% url 'book' review.book_id.id %}" class="ms-auto oneliner book-link">{{review.book_id.title}}</a></h5>
                 <p class="card-text twoliner">{{review.text}}</p>
                 <p class="card-text"><small class="text-muted">Review on {{review.date}}</small><button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal" id="read-review" data-username="{{review.user_id.username}}">Read Review</button></p>
                 </div>
             </div>
             </div>
         </div>
+        {% empty %}
+        <h5 class="text-center mt-3">No reviews yet.</h5>
+        {% endfor %}
     </div>
-    {% empty %}
-    <h5 class="text-center mt-3">No reviews yet.</h5>
-    {% endfor %}
 </div>
 
 <div class="container mt-3" style="max-width: 1200px;">
@@ -69,31 +65,51 @@
 
 <div class="container mt-3" style="max-width: 1200px;">
     <h2 class="ms border-bottom p-2">Your Lists</h2>
-    {% for review in reviews %}
-    <div class="row ms-5">
-        <div class="card mb-3 clickme border">
-            <div class="row flex-nowrap">
-            <div class="col-md-2 d-flex flex-column justify-content-center align-items-center ">
-                <img class="m-auto" src="{% static 'library/images/person.svg' %}" alt="profile" style="max-width:80px;">
-                <p class="mx-auto oneliner">{{review.user_id.username}}</p>
-            </div>
-            <div class="col-md-9">
-                <div class="card-body">
-                <h5 class="card-title">
-                    <div class="star-outer">
-                    <div class="star-inner" data-rating="{{review.rating}}"></div>
-                </div></h5>
-                <p class="card-text twoliner">{{review.text}}</p>
-                <p class="card-text"><small class="text-muted">Review on {{review.date}}</small><button type="button" class="btn btn-primary ms-3" data-bs-toggle="modal" data-bs-target="#exampleModal" id="read-review" data-username="{{review.user_id.username}}">Read Review</button></p>
-                </div>
-            </div>
-            </div>
+    <div class="row row-cols-4 ms-5 gx-5 gy-2 mt-3">
+    {% for list in lists %}
+        <div class="col">
+            <h3 class="" ><i class="bi bi-arrow-return-right"></i> <button class="btn p-0 m-o" data-bs-toggle="modal" data-bs-target="#listModal" data-listid="{{list.id}}" id="list-button" style="max-width: 180px;"><h3 class="oneliner">{{list.name}}</h3></button></h3>
         </div>
-    </div>
     {% empty %}
-    <h5 class="text-center mt-3">No reviews yet.</h5>
+    <h5 class="text-center mt-3">No lists yet.</h5>
     {% endfor %}
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg model-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+            <img class="mx-3" src="{% static 'library/images/person.svg' %}" alt="profile" style="max-width:40px;">
+            <h3 class="modal-title fs-5" id="exampleModalLabel"><span id="modal-username"></span>'s Review</h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="text-center mb-2">
+            <div class="star-outer">
+                <div class="star-inner" id="modal-star"></div></div></div>
+            <p id="reviewmodal-text"></p>
+        </div>
+      </div>
+    </div>
 </div>
 
+<div class="modal fade" id="listModal" tabindex="-1" aria-labelledby="listModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg model-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title fs-3 my-0 ms-auto" id="listModalLabel"></h3>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="list-content" >
+
+        </div>
+      </div>
+    </div>
+</div>
 
 {% endblock %}
+
+{% block script %}
+<script src="{% static 'library/profile.js' %}" type="module"></script>
+{% endblock %}
+

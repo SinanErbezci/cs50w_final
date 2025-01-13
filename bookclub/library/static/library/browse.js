@@ -16,6 +16,7 @@ const popoverBtn = document.querySelector("#list-action");
 var userLists;
 const CSRF_TOKEN = document.querySelector("#csrf_token").innerHTML;
 const BOOK_ID = window.location.pathname.split('/')[3];
+const LIST_ID = popoverBtn.dataset.listid;
 
 document.addEventListener('DOMContentLoaded', () => {
     
@@ -141,13 +142,20 @@ function ratingCheck(all, rate) {
 }
 
 function popoverInit() {
-    if (popoverBtn.dataset.list === "remove") {
-        const popover = new bootstrap.Popover(popoverBtn, {
+    if (popoverBtn.innerHTML === "Remove from List") {
+        const popover =  bootstrap.Popover.getOrCreateInstance(popoverBtn, {
             html: true,
-            title: "Remove from List",
-            content: `<button class='btn'>Yes</button>
-            <button class='btn'>No</button>`,
-            sanitize: false
+            title: "<h5>Remove from List</h5>",
+            content: `<div class="text-center">
+            <form action="/listing?q=remove" method="post">
+            <input type="hidden" name="csrfmiddlewaretoken" value="${CSRF_TOKEN}">
+            <input type="hidden" name="book" value="${BOOK_ID}">
+            <input type="hidden" name="list" value="${LIST_ID}">
+            <button type="submit" class='btn btn-primary'>Confirm ?</button>
+            </form>
+            </div>`,
+            sanitize: false,
+            trigger: "click manual"
         });
     }
     else{
@@ -157,7 +165,7 @@ function popoverInit() {
                 dropItem += `<li><button class="dropdown-item type="submit" name="list-id" value="${item}">${userLists[item]}</button></li>`
             }
         }
-        console.log(dropItem);
+        // console.log(dropItem);
         let dropContent = `<div class='d-flex'>
                 <form action="/listing?q=add" method="post">
                 <input type="hidden" name="csrfmiddlewaretoken" value="${CSRF_TOKEN}">
@@ -168,7 +176,7 @@ function popoverInit() {
                 <div class='dropdown'>
                 <button class='btn btn-secondary' id="create-list" data-bs-toggle='popover' rel='popover'>Create</button></div>
                 </div>`
-        console.log(dropContent);
+        // console.log(dropContent);
         const popover = bootstrap.Popover.getOrCreateInstance(popoverBtn, {
             html: true,
             title: "<h5>Add List or Create</h5>",
@@ -204,6 +212,7 @@ function closeAllPops() {
     const popElems = document.querySelectorAll('[data-bs-toggle="popover"]');
     popElems.forEach((item) => {
         let popBoot = bootstrap.Popover.getInstance(item);
+        console.log(popBoot);
         popBoot.hide();
     })
 }

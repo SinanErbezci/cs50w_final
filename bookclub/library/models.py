@@ -60,7 +60,16 @@ class Book(models.Model):
 
     def __str__(self):
         return self.title
-    
+
+    def serialize(self):
+        return {
+        "id": self.id,
+        "book_name": self.title,
+        "pic_src": self.cover,
+        "author_id": self.author.id,
+        "author_name": self.author.name,
+    }
+
 class Review(models.Model):
     book_id = models.ForeignKey(Book, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE)

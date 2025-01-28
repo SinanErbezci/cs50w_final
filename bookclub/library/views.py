@@ -304,22 +304,13 @@ def user_profile(request,user_id):
         content["follow_bool"] = follow_bool
         
     user = User.objects.get(pk=user_id)
-    # reviews
-    # lists
+    reviews = Review.objects.all().filter(user_id = user)
+    lists = Lists.objects.all().filter(owner = user)
 
     content["user"] =  user
-    content["reviews"] = None
+    content["reviews"] = reviews
+    content["lists"] = lists
 
-    if request.user.is_authenticated:
-        try:
-            follow_bool = User_Followers.objects.get(follower__id = request.user.id, following__id = user_id)
-            follow_bool = True
-        except:
-            follow_bool = False
-        content["follow_bool"] = follow_bool
-    
-    # reviews = Review.objects.get(user_id = user)
-    # print("review ->",reviews)
     return render(request, "library/user_profile.html", content)
 
 @login_required

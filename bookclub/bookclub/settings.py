@@ -85,7 +85,7 @@ DATABASES = {
 ELASTICSEARCH_DSL = {
     'default': {
         "hosts": "http://localhost:9200",
-        "http_auth": ('elastic', 'thmz7qT2')
+        "http_auth": ('elastic', 'sino96328')
     }
 }
 

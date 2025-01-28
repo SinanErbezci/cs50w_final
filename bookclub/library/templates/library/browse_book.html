@@ -79,7 +79,7 @@
                 <div class="row flex-nowrap">
                 <div class="col-md-2 d-flex flex-column justify-content-center align-items-center ">
                     <img class="m-auto" src="{% static 'library/images/person.svg' %}" alt="profile" style="max-width:80px;">
-                    <p class="mx-auto oneliner">{{review.user_id.username}}</p>
+                    <p class="mx-auto oneliner"><a class="book-link" href="{% url 'user_profile' review.user_id.id %}">{{review.user_id.username}}</a></p>
                 </div>
                 <div class="col-md-9">
                     <div class="card-body">

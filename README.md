@@ -1,5 +1,5 @@
 # Bookclub - CS50W Final Project
-#### Video Demo: 
+#### Video Demo: https://youtu.be/kAA-FCxAqx8https
 #### Description: The book platform where you can find the books you searched, create your lists, and write your book reviews.
 
 ### 1. Overview of the Project
@@ -57,4 +57,7 @@ Finally, python packages can be installed from requirements.txt.
 
 (4) -> Django Elasticsearch DSL - https://django-elasticsearch-dsl.readthedocs.io/en/latest/
 
+(5) -> Database - https://www.mediafire.com/file/g9fm32z7lgvs76h/db.sqlite3/file 
+
+(6) -> docker file for elasticsearch - https://www.mediafire.com/file/ycermit5ctz2qvv/elastic.zip/file
 

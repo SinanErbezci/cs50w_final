@@ -12,11 +12,14 @@ const reviewWriter = document.querySelector("#modal-username");
 const reviewText = document.querySelector("#reviewmodal-text");
 const reviewStar = document.querySelector("#modal-star");
 // Popover
-const popoverBtn = document.querySelector("#list-action");
-var userLists;
-const CSRF_TOKEN = document.querySelector("#csrf_token").innerHTML;
-const BOOK_ID = window.location.pathname.split('/')[3];
-const LIST_ID = popoverBtn.dataset.listid;
+if (document.querySelector("#list-action")) {
+    var popoverBtn = document.querySelector("#list-action");
+    var userLists;
+    var CSRF_TOKEN = document.querySelector("#csrf_token").innerHTML;    
+    var BOOK_ID = window.location.pathname.split('/')[3];
+    var LIST_ID = popoverBtn.dataset.listid;
+
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     

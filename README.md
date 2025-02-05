@@ -15,8 +15,72 @@ The profile page shows users' reviews, the people they follow, and the lists tha
 
 ### 2. Distinctiveness and Complexity
 
-This project is quite distinctive from other projects of the course. One of the main pieces of the project is searching feauture. It includes additional parts compared to projects of the course such as elastic-search and instant search applications via javascript. Complexity-wise, it is moderately complicated. The database is quite large which includes more than 80k entries. Importing these data into Django and searching through it, is a complex process. Also on the front end, using Bootstrap's advanced features and javascript implementations makes rather a complex task.
+This project is quite distinctive from other projects of the course with following aspects:
+- It uses advance feautures of Bootstrap. Such as modals, popovers, grid system, offcanvas, custom colors with Sass and more. This features are both used in HTML and JS(especially popovers and modals).
+- One of the main part of this project is searching feature. It uses ElasticSearch to get very quick results. To get ElasticSearch work with Django and the database is quite complex task.
+- Database includes over 80k entries from GoodReads. Importing these data to Django and creating relations between books, author and genres are done by custom Django-admin command.
+- Front-end of the project is very responsive. Based on view-width, the layout of the books change and some parts can appear/disappear.
 
+### 3. Files and Directories
+
+- cs50w-final 
+    - bookclub
+        - db.sqlite3
+            > It can be downloaded from [Resources-5](#resources)
+        - bookclub
+            - settings.py
+                > Settings of the Django Project. ElasticSearch url is given with username and password. Time-zone and other some options are changed.
+            - ...
+        - library
+            - management/commands
+                - books.py
+                    > Custom django-admin command. It reads data from BestBooksDataset and creates books, genres and authors. It starts reading books and looks as if genre and author exists in the database. If it's not, it creates them and adds corresponding relation. Also it makes data transformation like datetime, string striping etc.
+            - static/library
+                - images
+                    > All the images that used in the project. Icons, pictures etc.
+                - sass
+                - main.min.css
+                    > Custom bootstrap module is used. Primary and border color is changed.
+                - BookClub.js
+                    > Defines InstantSearch class. This class performs the search, populate results and does additional features.
+                - browse.js
+                    > JS module used in the browse/book page. It appear/disappear "Read More" button, fills the stars of reviews, submits the review form and also does the all popover features of "Adding to list" button.
+                - follow.js
+                    > JS module used in the profile page. It makes API call to follow/unfollow users.
+                - mainSearch.js
+                    > JS module used in the search page. It selects/deselects the book,genre or author options.
+                - profile.js
+                    > JS module used in the profile page. It fills the reviews stars, fills the modal and makes the API all to get books in a list and fills the modal with those books.
+                - search.js
+                    > It just initiate the InstantSearch class from BookClub.js.
+                - style.css
+                    > CSS file specifices coloring, sizing, some utility functionalities and etc.
+            - documents.py
+                > It is used for creating ElasticSearch indexes from the Django models. It is only one time executed after that the indexes are created and can be used.
+            - templates/library
+                > All the html files of the projects.
+            - forms.py
+                > Creates custom form for the Sign Up page. Uses basic UserCreationForm of Django.
+            - models.py
+                > Django models includes User,Book,Author,Genre, Lists and etc.
+            - views.py
+                > All the view function of the pages and API functions.
+            - urls.py 
+                > All the page urls and API urls.
+            - ...
+    - .gitignore
+        > Some of the files are ignored to decrease the size of git rep. Such as db.sqlite3, elasticsearch files.
+    - elastic-start-local
+        > It can be downloaded from [Resources-6](#resources)
+        - .env
+        - docker-compose.yml
+            > Docker configurations for ElasticSearch. It specifies which feautures are used and get the user data from .env file. 
+        - start.sh
+        - stop.sh
+        - uninstall.sh
+            > Scripts for start,stop and uninstall of ElasticSearch.
+    - README.md
+    - requirements.txt
 ### 3. Database Integration
 
 As stated before, the database is derived from the Best Books Ever dataset (1) which includes over 50k records from Goodreads. This dataset includes many columns where it's not useful for the project. So for the decreasing size of the project, these columns are deleted (such as price, characters, etc.). To make this process automated custom command is created. It is called **books.py** located in bookclub/library/management/commands. This script imports the data from a CSV file and starts reading books from the dataset. Some data conversions are made such as turning date into datetime etc. Also, authors and genres are automatically created through reading data from CSV. Firstly, it looks if the author and genres exist in the database. If not, it creates the new objects and adds the relationship between the objects.

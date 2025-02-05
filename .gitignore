@@ -6,3 +6,4 @@ bookclub/library/static/library/package-lock.json
 bookclub/library/static/library/package.json
 bookclub/library/static/library/node_modules
 elastic-start-local
+bookclub.pem
